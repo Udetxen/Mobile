@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "791957746525",
+    "project_id": "udetxen",
+    "storage_bucket": "udetxen.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:791957746525:android:0cbcfe64389db39e4a6eb4",
+        "android_client_info": {
+          "package_name": "com.example.udetxen"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "791957746525-8s201uq1nqa7otgc09s5iknlee8b5kfe.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDpNixNRcmySrPrds9Lp9kfXJaUErFhc7o"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "791957746525-8s201uq1nqa7otgc09s5iknlee8b5kfe.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
