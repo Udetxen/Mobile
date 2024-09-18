@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:udetxen/features/auth/screens/forgot_password_screen.dart';
 import 'package:udetxen/features/auth/screens/register_screen.dart';
 import 'package:udetxen/features/auth/services/auth_service.dart';
-import 'package:udetxen/features/dashboard/screens/admin_dashboard_screen.dart';
+import 'package:udetxen/features/dashboard.user/screens/user_management_screen.dart';
 import 'package:udetxen/features/home/screens/home_screen.dart';
 import 'package:udetxen/shared/config/service_locator.dart';
 import 'package:udetxen/shared/utils/decor/input_decoration.dart';
@@ -77,7 +77,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     onSuccess: (user) {
                       if (user.isAdmin) {
                         Navigator.pushReplacement(
-                            context, AdminDashboardScreen.route());
+                            context, UserManagementScreen.route());
                       } else {
                         Navigator.pushReplacement(context, HomeScreen.route());
                       }
@@ -101,7 +101,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   onSuccess: (user) {
                     if (user.isAdmin) {
                       Navigator.pushReplacement(
-                          context, AdminDashboardScreen.route());
+                          context, UserManagementScreen.route());
                     } else {
                       Navigator.pushReplacement(context, HomeScreen.route());
                     }
@@ -118,8 +118,13 @@ class _LoginScreenState extends State<LoginScreen> {
             ),
             const SizedBox(height: 10),
             TextButton(
-              onPressed: () {
-                Navigator.push(context, ForgotPasswordScreen.route());
+              onPressed: () async {
+                final email =
+                    await Navigator.push(context, ForgotPasswordScreen.route());
+
+                if (email != null) {
+                  emailController.text = email as String;
+                }
               },
               child: const Text('Forgot Password'),
             ),

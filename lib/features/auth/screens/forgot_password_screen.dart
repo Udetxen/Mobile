@@ -5,11 +5,10 @@ import 'package:udetxen/shared/utils/notification_util.dart';
 import 'package:provider/provider.dart';
 import 'package:udetxen/shared/widgets/layouts/unauthenticated_layout.dart';
 import '../services/auth_service.dart';
-import 'login_screen.dart';
 
 class ForgotPasswordScreen extends StatefulWidget {
   static route() {
-    return MaterialPageRoute<void>(
+    return MaterialPageRoute(
       builder: (_) => const UnauthenticatedLayout(initialScreen: 2),
     );
   }
@@ -59,9 +58,9 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                 if (response.failure != null) {
                   _showError(response.failure!.userFriendlyMessage);
                 } else if (mounted) {
-                  Navigator.pushReplacement(
+                  Navigator.pop(
                     context,
-                    LoginScreen.route(email: emailController.text),
+                    emailController.text,
                   );
 
                   final notificationUtil =
