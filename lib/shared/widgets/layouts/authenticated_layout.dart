@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:udetxen/features/dashboard/screens/admin_dashboard_screen.dart';
-import 'package:udetxen/features/dashboard/screens/user_management_screen.dart';
+import 'package:udetxen/features/dashboard.trip/screens/dashboard_trip_list_screen.dart';
+import 'package:udetxen/features/dashboard.user/screens/user_management_screen.dart';
+import 'package:udetxen/features/dashboard.venue/screens/venue_list_screen.dart';
 import 'package:udetxen/features/home/screens/home_screen.dart';
 import 'package:udetxen/features/profile/screens/profile_screen.dart';
+import 'package:udetxen/features/trip.expense/screens/expense_list_screen.dart';
+import 'package:udetxen/features/trip/screens/trip_list_screen.dart';
 import 'package:udetxen/shared/utils/theme_service.dart';
 import 'package:provider/provider.dart';
 
@@ -22,12 +25,15 @@ class _AuthenticatedLayoutState extends State<AuthenticatedLayout> {
 
   final List<Widget> _userScreens = [
     const HomeScreen(),
+    const TripListScreen(),
+    const ExpenseListScreen(),
     const ProfileScreen(),
   ];
 
   final List<Widget> _adminScreens = [
-    const AdminDashboardScreen(),
     const UserManagementScreen(),
+    const VenueListScreen(),
+    const DashboardTripListScreen()
   ];
 
   @override
@@ -65,18 +71,30 @@ class _AuthenticatedLayoutState extends State<AuthenticatedLayout> {
         items: widget.isAdmin
             ? [
                 const BottomNavigationBarItem(
-                  icon: Icon(Icons.home),
-                  label: 'Dashboard',
-                ),
-                const BottomNavigationBarItem(
                   icon: Icon(Icons.people),
                   label: 'Manage Users',
+                ),
+                const BottomNavigationBarItem(
+                  icon: Icon(Icons.location_city),
+                  label: 'Venues',
+                ),
+                const BottomNavigationBarItem(
+                  icon: Icon(Icons.tour),
+                  label: 'Tours',
                 ),
               ]
             : [
                 const BottomNavigationBarItem(
                   icon: Icon(Icons.home),
                   label: 'Home',
+                ),
+                const BottomNavigationBarItem(
+                  icon: Icon(Icons.airplanemode_active),
+                  label: 'Trips',
+                ),
+                const BottomNavigationBarItem(
+                  icon: Icon(Icons.attach_money),
+                  label: 'Expenses',
                 ),
                 const BottomNavigationBarItem(
                   icon: Icon(Icons.person),

@@ -13,7 +13,7 @@ class ProfileScreen extends StatefulWidget {
 
   static route() {
     return MaterialPageRoute<void>(
-      builder: (_) => const AuthenticatedLayout(currentIndex: 1),
+      builder: (_) => const AuthenticatedLayout(currentIndex: 3),
     );
   }
 
