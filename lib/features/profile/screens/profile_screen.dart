@@ -5,7 +5,7 @@ import 'package:udetxen/shared/config/service_locator.dart';
 import 'package:udetxen/shared/utils/notification_util.dart';
 import 'package:udetxen/shared/widgets/layouts/authenticated_layout.dart';
 import 'package:provider/provider.dart';
-import '../../auth/models/user_model.dart';
+import 'package:udetxen/shared/types/models/user.dart' as user_model;
 import 'profile_settings_screen.dart';
 
 class ProfileScreen extends StatefulWidget {
@@ -26,7 +26,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
   Widget build(BuildContext context) {
     final authService = getIt<AuthService>();
 
-    return StreamBuilder<UserModel?>(
+    return StreamBuilder<user_model.User?>(
       stream: authService.userStream,
       builder: (context, snapshot) {
         final user = snapshot.data;

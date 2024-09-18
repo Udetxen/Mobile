@@ -6,13 +6,13 @@ import 'package:udetxen/shared/types/failure.dart';
 import 'package:udetxen/shared/types/response.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 
-import '../models/user_model.dart';
+import 'package:udetxen/shared/types/models/user.dart' as user_model;
 
 class AuthService {
   final FirebaseAuth _auth;
   final GoogleSignIn _googleSignIn;
   final FirebaseFirestore _firestore;
-  final _userController = StreamController<UserModel?>.broadcast();
+  final _userController = StreamController<user_model.User?>.broadcast();
 
   AuthService(this._auth, this._firestore, this._googleSignIn) {
     _auth.authStateChanges().listen((user) async {
@@ -25,10 +25,10 @@ class AuthService {
     });
   }
 
-  Future<UserModel?> get currentUser async =>
+  Future<user_model.User?> get currentUser async =>
       await getUserData(_auth.currentUser);
 
-  Stream<UserModel?> get userStream => _userController.stream;
+  Stream<user_model.User?> get userStream => _userController.stream;
 
   Future<void> updateUserInStream() async {
     final user = _auth.currentUser;
@@ -38,21 +38,23 @@ class AuthService {
     }
   }
 
-  Future<UserModel> getUserData(User? user) async {
+  Future<user_model.User> getUserData(User? user) async {
     final userDoc = await _firestore.collection('users').doc(user!.uid).get();
 
-    final userModel = UserModel(
+    final userModel = user_model.User(
       uid: user.uid,
       email: user.email,
       displayName: user.displayName,
       bio: userDoc.data()?['bio'],
       role: userDoc.data()?['role'],
+      photoURL: user.photoURL,
+      trips: userDoc.data()?['trips'],
     );
 
     return userModel;
   }
 
-  Future<Response<UserModel>> signInWithGoogle() async {
+  Future<Response<user_model.User>> signInWithGoogle() async {
     try {
       final GoogleSignInAccount? googleUser = await _googleSignIn.signIn();
       if (googleUser == null) {
@@ -156,7 +158,7 @@ class AuthService {
     }
   }
 
-  Future<Response<UserModel>> signInWithEmail(
+  Future<Response<user_model.User>> signInWithEmail(
       String email, String password) async {
     try {
       final UserCredential userCredential = await _auth
@@ -247,13 +249,13 @@ class AuthService {
     }
   }
 
-  Future<Response<UserModel>> registerWithEmail(
+  Future<Response<user_model.User>> registerWithEmail(
       String email, String password) async {
     try {
       final UserCredential userCredential = await _auth
           .createUserWithEmailAndPassword(email: email, password: password);
 
-      final userModel = UserModel(
+      final userModel = user_model.User(
         uid: userCredential.user!.uid,
         email: userCredential.user!.email,
         displayName: userCredential.user!.displayName,

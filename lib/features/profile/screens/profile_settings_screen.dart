@@ -3,7 +3,7 @@ import 'package:udetxen/features/auth/services/auth_service.dart';
 import 'package:udetxen/features/profile/services/profile_service.dart';
 import 'package:udetxen/shared/config/service_locator.dart';
 import 'package:udetxen/shared/utils/decor/input_decoration.dart';
-import '../../auth/models/user_model.dart';
+import 'package:udetxen/shared/types/models/user.dart' as user_model;
 
 class ProfileSettingsScreen extends StatefulWidget {
   const ProfileSettingsScreen({super.key});
@@ -25,7 +25,7 @@ class _ProfileSettingsScreenState extends State<ProfileSettingsScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return StreamBuilder<UserModel?>(
+    return StreamBuilder<user_model.User?>(
       stream: getIt<AuthService>().userStream,
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
@@ -86,7 +86,7 @@ class _ProfileSettingsScreenState extends State<ProfileSettingsScreen> {
         return;
       }
 
-      final updatedUser = UserModel(
+      final updatedUser = user_model.User(
         uid: user.uid,
         email: user.email,
         displayName: _displayName ?? user.displayName,

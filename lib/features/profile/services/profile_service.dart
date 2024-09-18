@@ -1,6 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:udetxen/features/auth/models/user_model.dart';
+import 'package:udetxen/shared/types/models/user.dart' as user_model;
 import 'package:udetxen/features/auth/services/auth_service.dart';
 import 'package:udetxen/shared/types/failure.dart';
 import 'package:udetxen/shared/types/response.dart';
@@ -12,7 +12,8 @@ class ProfileService {
 
   ProfileService(this._auth, this._firestore, this._authService);
 
-  Future<Response<UserModel>> updateUserProfile(UserModel user) async {
+  Future<Response<user_model.User>> updateUserProfile(
+      user_model.User user) async {
     try {
       await _auth.currentUser?.updateDisplayName(user.displayName);
 

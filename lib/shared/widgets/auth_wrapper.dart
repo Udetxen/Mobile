@@ -3,7 +3,7 @@ import 'package:udetxen/features/auth/services/auth_service.dart';
 import 'package:udetxen/shared/config/service_locator.dart';
 import 'package:udetxen/shared/utils/connectivity_service.dart';
 import 'package:provider/provider.dart';
-import '../../features/auth/models/user_model.dart';
+import 'package:udetxen/shared/types/models/user.dart' as user_model;
 import 'layouts/authenticated_layout.dart';
 import 'no_connection_screen.dart';
 import 'layouts/unauthenticated_layout.dart';
@@ -17,7 +17,7 @@ class AuthWrapper extends StatelessWidget {
     final isConnected = Provider.of<ConnectivityService>(context).isConnected;
 
     return isConnected
-        ? StreamBuilder<UserModel?>(
+        ? StreamBuilder<user_model.User?>(
             stream: authService.userStream,
             builder: (context, snapshot) {
               final user = snapshot.data;
