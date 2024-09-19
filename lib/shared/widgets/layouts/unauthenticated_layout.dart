@@ -39,24 +39,25 @@ class _UnauthenticatedLayoutState extends State<UnauthenticatedLayout> {
     final theme = Provider.of<ThemeService>(context);
 
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('App'),
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.brightness_6),
-            onPressed: theme.toggleThemeMode,
-          ),
-        ],
-        backgroundColor: Theme.of(context).hintColor,
-      ),
-      body: PageView(
-        controller: _pageController,
-        children: [
-          LoginScreen(email: widget.email),
-          const RegisterScreen(),
-          const ForgotPasswordScreen(),
-        ],
-      ),
+      // appBar: AppBar(
+      //   title: const Text('App'),
+      //   actions: [
+      //     IconButton(
+      //       icon: const Icon(Icons.brightness_6),
+      //       onPressed: theme.toggleThemeMode,
+      //     ),
+      //   ],
+      //   backgroundColor: Theme.of(context).hintColor,
+      // ),
+      body: LoginScreen(email: widget.email),
+      // PageView(
+      //   controller: _pageController,
+      //   children: [
+      //     LoginScreen(email: widget.email),
+      //     const RegisterScreen(),
+      //     const ForgotPasswordScreen(),
+      //   ],
+      // ),
     );
   }
 }
