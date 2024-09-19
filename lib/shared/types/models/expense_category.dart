@@ -1,9 +1,9 @@
 class ExpenseCategory {
-  String uid;
+  String? uid;
   String name;
 
   ExpenseCategory({
-    required this.uid,
+    this.uid,
     required this.name,
   });
 

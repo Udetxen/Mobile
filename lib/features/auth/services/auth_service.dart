@@ -28,6 +28,8 @@ class AuthService {
   Future<user_model.User> get currentUser async =>
       await getUserData(_auth.currentUser);
 
+  String get currentUserUid => _auth.currentUser!.uid;
+
   Stream<user_model.User?> get userStream => _userController.stream;
 
   Future<void> updateUserInStream() async {

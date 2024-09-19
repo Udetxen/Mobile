@@ -1,7 +1,7 @@
 import 'expense_category.dart';
 
 class Expense {
-  String uid;
+  String? uid;
   String name;
   double budget;
   double? expense;
@@ -10,7 +10,7 @@ class Expense {
   List<ExpenseCategory> categories;
 
   Expense({
-    required this.uid,
+    this.uid,
     required this.name,
     required this.budget,
     this.expense,
