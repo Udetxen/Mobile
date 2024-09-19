@@ -1,10 +1,10 @@
 class Venue {
-  String uid;
+  String? uid;
   String name;
   List<String> imageUrls;
 
   Venue({
-    required this.uid,
+    this.uid,
     required this.name,
     required this.imageUrls,
   });

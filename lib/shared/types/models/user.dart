@@ -1,7 +1,7 @@
 import 'trip.dart';
 
 class User {
-  String uid;
+  String? uid;
   String? displayName;
   String? bio;
   String? photoURL;
@@ -13,7 +13,7 @@ class User {
   bool get isUser => role == 'USER';
 
   User({
-    required this.uid,
+    this.uid,
     this.displayName,
     this.bio,
     this.photoURL,

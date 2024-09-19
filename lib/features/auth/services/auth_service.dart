@@ -25,7 +25,7 @@ class AuthService {
     });
   }
 
-  Future<user_model.User?> get currentUser async =>
+  Future<user_model.User> get currentUser async =>
       await getUserData(_auth.currentUser);
 
   Stream<user_model.User?> get userStream => _userController.stream;

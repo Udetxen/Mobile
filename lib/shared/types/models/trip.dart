@@ -3,24 +3,25 @@ import 'user.dart';
 import 'venue.dart';
 
 class Trip {
-  String uid;
+  String? uid;
   User? creator;
   String name;
-  DateTime startDate;
+  DateTime? startDate;
   int duration;
   DateTime? endDate;
   Venue departure;
   Venue destination;
   double budget;
   List<Expense>? expenses;
-  String type;
+  String type; // individual, group
   List<Participant>? participants;
+  DateTime? updatedAt;
 
   Trip({
-    required this.uid,
+    this.uid,
     this.creator,
     required this.name,
-    required this.startDate,
+    this.startDate,
     required this.duration,
     this.endDate,
     required this.departure,
@@ -29,6 +30,7 @@ class Trip {
     required this.budget,
     required this.type,
     this.participants,
+    this.updatedAt,
   });
 
   factory Trip.fromJson(Map<String, dynamic> json) {
@@ -50,6 +52,8 @@ class Trip {
               .map((e) => Participant.fromJson(e))
               .toList()
           : null,
+      updatedAt:
+          json['updatedAt'] != null ? DateTime.parse(json['updatedAt']) : null,
     );
   }
 
@@ -58,7 +62,7 @@ class Trip {
       'uid': uid,
       'creator': creator?.toJson(),
       'name': name,
-      'startDate': startDate.toIso8601String(),
+      'startDate': startDate?.toIso8601String(),
       'duration': duration,
       'endDate': endDate?.toIso8601String(),
       'departure': departure.toJson(),
@@ -67,6 +71,7 @@ class Trip {
       'budget': budget,
       'type': type,
       'participants': participants?.map((e) => e.toJson()).toList(),
+      'updatedAt': updatedAt?.toIso8601String(),
     };
   }
 }
