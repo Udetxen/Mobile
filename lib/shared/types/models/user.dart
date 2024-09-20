@@ -1,5 +1,3 @@
-import 'trip.dart';
-
 class User {
   String? uid;
   String? displayName;
@@ -7,7 +5,6 @@ class User {
   String? photoURL;
   String? email;
   String role;
-  List<Trip>? trips;
 
   bool get isAdmin => role == 'ADMIN';
   bool get isUser => role == 'USER';
@@ -19,7 +16,6 @@ class User {
     this.photoURL,
     this.email,
     this.role = 'USER',
-    this.trips,
   });
 
   factory User.fromJson(Map<String, dynamic> json) {
@@ -30,9 +26,6 @@ class User {
       photoURL: json['photoURL'],
       email: json['email'],
       role: json['role'] ?? 'USER',
-      trips: json['trips'] != null
-          ? (json['trips'] as List).map((i) => Trip.fromJson(i)).toList()
-          : null,
     );
   }
 
@@ -44,7 +37,6 @@ class User {
       'photoURL': photoURL,
       'email': email,
       'role': role,
-      'trips': trips?.map((trip) => trip.toJson()).toList(),
     };
   }
 }

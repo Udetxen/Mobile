@@ -60,7 +60,7 @@ class _TripFormScreenState extends State<TripFormScreen> {
       _selectedParticipants = [];
     }
     _venueFuture = _tripService.getVenues().first;
-    _userFuture = _tripService.getUser(widget.trip?.uid ?? '').first;
+    _userFuture = _tripService.getUsers(widget.trip?.uid ?? '').first;
   }
 
   @override
@@ -290,7 +290,7 @@ class _TripFormScreenState extends State<TripFormScreen> {
                     _typeController.text = newValue!;
                     if (newValue == 'group') {
                       _userFuture =
-                          _tripService.getUser(widget.trip?.uid ?? '').first;
+                          _tripService.getUsers(widget.trip?.uid ?? '').first;
                     }
                   });
                 },
@@ -334,8 +334,8 @@ class _TripFormScreenState extends State<TripFormScreen> {
                             duration: int.parse(_durationController.text),
                             budget: double.parse(_budgetController.text),
                             type: _typeController.text,
-                            departure: _selectedDepartureVenue!,
-                            destination: _selectedDestinationVenue!,
+                            departureUid: _selectedDepartureVenue!.uid!,
+                            destinationUid: _selectedDestinationVenue!.uid!,
                             participants: _selectedParticipants.isNotEmpty
                                 ? _selectedParticipants
                                     .map((u) =>
@@ -352,8 +352,8 @@ class _TripFormScreenState extends State<TripFormScreen> {
                             duration: int.parse(_durationController.text),
                             budget: double.parse(_budgetController.text),
                             type: _typeController.text,
-                            departure: _selectedDepartureVenue!,
-                            destination: _selectedDestinationVenue!,
+                            departureUid: _selectedDepartureVenue!.uid!,
+                            destinationUid: _selectedDestinationVenue!.uid!,
                             participants: _selectedParticipants
                                 .map((u) => Participant(participantUid: u.uid!))
                                 .toList(),

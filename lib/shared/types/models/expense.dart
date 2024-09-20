@@ -7,7 +7,8 @@ class Expense {
   double? expense;
   String? invoiceImageUrl;
   String? note;
-  List<ExpenseCategory> categories;
+  List<String> categoryUids;
+  List<ExpenseCategory>? categories;
 
   Expense({
     this.uid,
@@ -16,7 +17,8 @@ class Expense {
     this.expense,
     this.invoiceImageUrl,
     this.note,
-    required this.categories,
+    required this.categoryUids,
+    this.categories,
   });
 
   factory Expense.fromJson(Map<String, dynamic> json) {
@@ -27,9 +29,12 @@ class Expense {
       expense: json['expense'],
       invoiceImageUrl: json['invoiceImageUrl'],
       note: json['note'],
-      categories: (json['categories'] as List)
-          .map((e) => ExpenseCategory.fromJson(e))
-          .toList(),
+      categoryUids: List<String>.from(json['categoryUids']),
+      categories: json['categories'] != null
+          ? (json['categories'] as List)
+              .map((category) => ExpenseCategory.fromJson(category))
+              .toList()
+          : null,
     );
   }
 
@@ -41,7 +46,7 @@ class Expense {
       'expense': expense,
       'invoiceImageUrl': invoiceImageUrl,
       'note': note,
-      'categories': categories.map((category) => category.toJson()).toList(),
+      'categoryUids': categoryUids,
     };
   }
 }

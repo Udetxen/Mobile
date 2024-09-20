@@ -17,13 +17,13 @@ class TripService {
   Future<String> createTrip(Trip trip) async {
     final docRef = _firestore.collection(tripCollection).doc();
     trip.uid = docRef.id;
-    trip.creator = await _authService.currentUser;
+    trip.creatorUid = await _authService.currentUser.then((u) => u.uid);
     trip.endDate = trip.startDate?.add(Duration(days: trip.duration));
     trip.updatedAt = DateTime.now();
 
     if (trip.type == 'group') {
       trip.participants = [
-        Participant(participantUid: trip.creator!.uid!),
+        Participant(participantUid: trip.creatorUid!),
         ...?trip.participants,
       ];
       trip.participantUids =
@@ -42,13 +42,13 @@ class TripService {
     final docRef = _firestore.collection(tripCollection).doc();
 
     trip.uid = docRef.id;
-    trip.creator = await _authService.currentUser;
+    trip.creatorUid = await _authService.currentUser.then((u) => u.uid);
     trip.endDate = trip.startDate?.add(Duration(days: trip.duration));
     trip.updatedAt = DateTime.now();
 
     if (trip.type == 'group') {
       trip.participants = [
-        Participant(participantUid: trip.creator!.uid!),
+        Participant(participantUid: trip.creatorUid!),
       ];
     }
     await docRef.set(trip.toJson());
@@ -60,6 +60,13 @@ class TripService {
     trip.updatedAt = DateTime.now();
 
     if (trip.type == 'group') {
+      if (trip.participants == null ||
+          !trip.participants!.any((p) => p.participantUid == trip.creatorUid)) {
+        trip.participants = [
+          Participant(participantUid: trip.creatorUid!),
+          ...?trip.participants,
+        ];
+      }
       trip.participantUids =
           trip.participants?.map((p) => p.participantUid).toList();
     } else if (trip.type == 'individual') {
@@ -79,14 +86,14 @@ class TripService {
     await _firestore.collection(tripCollection).doc(tripId).delete();
   }
 
-  Future<Stream<List<Trip>>> getUserTrips({TripStatus? status}) async {
-    final currentUser = await _authService.currentUser;
-    final userId = currentUser.uid;
+  Future<Stream<List<Trip>>> getUserTrips(
+      {String? userUid, TripStatus? status}) async {
+    final userId = userUid ?? await _authService.currentUser.then((u) => u.uid);
 
     Query individualQuery = _firestore
         .collection(tripCollection)
         .where('type', isEqualTo: 'individual')
-        .where('creator.uid', isEqualTo: userId)
+        .where('creatorUid', isEqualTo: userId)
         .orderBy('startDate');
 
     if (status != null) {
@@ -109,12 +116,21 @@ class TripService {
       }
     }
 
-    final individualTripsStream = individualQuery.snapshots().map((snapshot) {
-      return snapshot.docs.map((doc) {
-        final data = doc.data()!;
-        return Trip.fromJson(data as Map<String, dynamic>);
-      }).toList();
+    final individualTripsStream =
+        individualQuery.snapshots().asyncMap((snapshot) async {
+      final trips = await Future.wait(snapshot.docs.map((doc) async {
+        final data = doc.data()! as Map<String, dynamic>;
+
+        data['departure'] = await getVenue(data['departureUid'])
+            .then((value) => value.toJson());
+        data['destination'] = await getVenue(data['destinationUid'])
+            .then((value) => value.toJson());
+
+        return Trip.fromJson(data);
+      }).toList());
+      return trips;
     });
+
     Query groupQuery = _firestore
         .collection(tripCollection)
         .where('type', isEqualTo: 'group')
@@ -139,25 +155,18 @@ class TripService {
       }
     }
 
-    final groupTripsStream = groupQuery.snapshots().map((snapshot) {
-      return snapshot.docs.map((doc) {
-        final data = doc.data()!;
-        return Trip.fromJson(data as Map<String, dynamic>);
-      }).toList();
-    });
+    final groupTripsStream = groupQuery.snapshots().asyncMap((snapshot) async {
+      final trips = await Future.wait(snapshot.docs.map((doc) async {
+        final data = doc.data()! as Map<String, dynamic>;
 
-    individualTripsStream.listen((individualTrips) {
-      print('Individual Trips:');
-      individualTrips.forEach((trip) {
-        print(trip.toJson());
-      });
-    });
+        data['departure'] = await getVenue(data['departureUid'])
+            .then((value) => value.toJson());
+        data['destination'] = await getVenue(data['destinationUid'])
+            .then((value) => value.toJson());
 
-    groupTripsStream.listen((groupTrips) {
-      print('Group Trips:');
-      groupTrips.forEach((trip) {
-        print(trip.toJson());
-      });
+        return Trip.fromJson(data);
+      }).toList());
+      return trips;
     });
 
     return Rx.combineLatest2<List<Trip>, List<Trip>, List<Trip>>(
@@ -177,8 +186,15 @@ class TripService {
         .collection(tripCollection)
         .doc(tripId)
         .snapshots()
-        .map((snapshot) {
-      return Trip.fromJson(snapshot.data()!);
+        .asyncMap((snapshot) async {
+      final data = snapshot.data()!;
+
+      data['departure'] =
+          await getVenue(data['departureUid']).then((value) => value.toJson());
+      data['destination'] = await getVenue(data['destinationUid'])
+          .then((value) => value.toJson());
+
+      return Trip.fromJson(data);
     });
   }
 
@@ -216,7 +232,7 @@ class TripService {
     });
   }
 
-  Stream<List<User>> getUser(String tripId, {String? email}) {
+  Stream<List<User>> getUsers(String tripId, {String? email}) {
     return _firestore
         .collection(userCollection)
         .where('email', isEqualTo: email)
@@ -227,5 +243,11 @@ class TripService {
         return User.fromJson(data);
       }).toList();
     });
+  }
+
+  Future<Venue> getVenue(String venueId) async {
+    final doc = await _firestore.collection(venueCollection).doc(venueId).get();
+    final data = doc.data();
+    return Venue.fromJson(data!);
   }
 }

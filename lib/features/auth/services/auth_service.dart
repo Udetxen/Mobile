@@ -50,7 +50,6 @@ class AuthService {
       bio: userDoc.data()?['bio'],
       role: userDoc.data()?['role'],
       photoURL: user.photoURL,
-      trips: userDoc.data()?['trips'],
     );
 
     return userModel;

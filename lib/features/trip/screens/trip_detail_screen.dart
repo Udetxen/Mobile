@@ -46,7 +46,7 @@ class _TripDetailScreenState extends State<TripDetailScreen> {
           final participation =
               trip.participants != null && trip.participants?.isNotEmpty == true
                   ? trip.participants
-                      ?.firstWhere((p) => p.participantUid == trip.creator?.uid)
+                      ?.firstWhere((p) => p.participantUid == trip.creatorUid)
                   : null;
           final totalExpense = trip.expenses?.fold<double>(
             0.0,
@@ -137,19 +137,20 @@ class _TripDetailScreenState extends State<TripDetailScreen> {
               ),
 
               // Departure Images
-              if (trip.departure.imageUrls.isNotEmpty)
+              if (trip.departure != null &&
+                  trip.departure!.imageUrls.isNotEmpty)
                 Card(
                   margin: const EdgeInsets.only(bottom: 16.0),
                   elevation: 4.0,
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      _buildImageCarousel(trip.departure.imageUrls,
-                          'From ${trip.departure.name}'),
+                      _buildImageCarousel(trip.departure!.imageUrls,
+                          'From ${trip.departure!.name}'),
                       Padding(
                         padding: const EdgeInsets.all(16.0),
                         child: Text(
-                          'Departure: ${trip.departure.name}',
+                          'Departure: ${trip.departure!.name}',
                           style: const TextStyle(fontSize: 18),
                         ),
                       ),
@@ -158,19 +159,20 @@ class _TripDetailScreenState extends State<TripDetailScreen> {
                 ),
 
               // Destination Images
-              if (trip.destination.imageUrls.isNotEmpty)
+              if (trip.destination != null &&
+                  trip.destination!.imageUrls.isNotEmpty)
                 Card(
                   margin: const EdgeInsets.only(bottom: 16.0),
                   elevation: 4.0,
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      _buildImageCarousel(trip.destination.imageUrls,
-                          'To ${trip.destination.name}'),
+                      _buildImageCarousel(trip.destination!.imageUrls,
+                          'To ${trip.destination!.name}'),
                       Padding(
                         padding: const EdgeInsets.all(16.0),
                         child: Text(
-                          'Destination: ${trip.destination.name}',
+                          'Destination: ${trip.destination!.name}',
                           style: const TextStyle(fontSize: 18),
                         ),
                       ),

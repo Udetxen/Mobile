@@ -32,11 +32,14 @@ class TripCard extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              if (trip.departure.imageUrls.isNotEmpty)
+              if (trip.departure != null &&
+                  trip.departure!.imageUrls.isNotEmpty)
                 _buildImageCarousel(
-                    trip.departure.imageUrls, 'From ${trip.departure.name}'),
-              if (trip.departure.imageUrls.isNotEmpty &&
-                  trip.destination.imageUrls.isNotEmpty)
+                    trip.departure!.imageUrls, 'From ${trip.departure!.name}'),
+              if (trip.departure != null &&
+                  trip.destination != null &&
+                  trip.departure!.imageUrls.isNotEmpty &&
+                  trip.destination!.imageUrls.isNotEmpty)
                 Center(
                   child: Padding(
                     padding: const EdgeInsets.symmetric(vertical: 8.0),
@@ -47,9 +50,10 @@ class TripCard extends StatelessWidget {
                     ),
                   ),
                 ),
-              if (trip.destination.imageUrls.isNotEmpty)
-                _buildImageCarousel(
-                    trip.destination.imageUrls, 'To ${trip.destination.name}'),
+              if (trip.destination != null &&
+                  trip.destination!.imageUrls.isNotEmpty)
+                _buildImageCarousel(trip.destination!.imageUrls,
+                    'To ${trip.destination!.name}'),
               const SizedBox(height: 16.0),
               Text(
                 trip.name,
