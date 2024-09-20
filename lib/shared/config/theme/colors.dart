@@ -7,7 +7,7 @@ class AppColors {
   static const Color secondary = Color.fromARGB(255, 0, 98, 255); // blue
   static const Color backgroundDark = Color(0xFF121212); // dark grey
   static const Color backgroundLight = Color(0xFFFFFFFF); // dark grey
-  static const Color error = Color.fromARGB(255, 185, 61, 83); // red
+  static const Color error = Color.fromARGB(255, 255, 0, 47); // red
   static const Color cardDark = Color(0xFFFFFFFF); // white
   static const Color card = Color(0xFF1E1E1E); // dark grey
   static const Color divider = Color(0xFFBDBDBD); // grey

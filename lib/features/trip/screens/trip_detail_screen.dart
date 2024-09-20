@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:udetxen/features/trip.expense/screens/expense_detail_screen.dart';
 import 'package:udetxen/features/trip/screens/trip_form_screen.dart';
 import 'package:udetxen/features/trip/services/trip_service.dart';
 import 'package:udetxen/shared/config/service_locator.dart';
@@ -43,14 +44,16 @@ class _TripDetailScreenState extends State<TripDetailScreen> {
           }
 
           final trip = snapshot.data!;
-          final participation =
-              trip.participants != null && trip.participants?.isNotEmpty == true
-                  ? trip.participants
-                      ?.firstWhere((p) => p.participantUid == trip.creatorUid)
-                  : null;
+          final participation = trip.participants != null &&
+                  trip.participants?.isNotEmpty == true &&
+                  trip.creatorUid != null
+              ? trip.participants
+                  ?.firstWhere((p) => p.participantUid == trip.creatorUid)
+              : null;
           final totalExpense = trip.expenses?.fold<double>(
             0.0,
-            (previousValue, element) => previousValue + element.expense!,
+            (previousValue, element) =>
+                previousValue + (element.expense ?? 0.0),
           );
 
           return ListView(
@@ -70,16 +73,17 @@ class _TripDetailScreenState extends State<TripDetailScreen> {
                       overflow: TextOverflow.ellipsis,
                     ),
                   ),
-                  ElevatedButton(
-                    onPressed: () async {
-                      final forkedTrip = await _tripService.forkTrip(trip);
+                  if (trip.creatorUid == null)
+                    ElevatedButton(
+                      onPressed: () async {
+                        final forkedTrip = await _tripService.forkTrip(trip);
 
-                      Navigator.of(context).pushReplacement(
-                        TripFormScreen.route(trip: forkedTrip),
-                      );
-                    },
-                    child: const Text('Make a Plan'),
-                  ),
+                        Navigator.of(context).pushReplacement(
+                          TripFormScreen.route(trip: forkedTrip),
+                        );
+                      },
+                      child: const Text('Make a Plan'),
+                    ),
                 ],
               ),
               const SizedBox(height: 16),
@@ -103,12 +107,20 @@ class _TripDetailScreenState extends State<TripDetailScreen> {
                           style: const TextStyle(fontSize: 18),
                         ),
                         ElevatedButton(
-                          onPressed: () {},
+                          onPressed: () {
+                            Navigator.of(context).push(
+                              ExpenseDetailScreen.route(trip),
+                            );
+                          },
                           child: const Text('View Expenses'),
                         ),
                       ] else ...[
                         ElevatedButton(
-                          onPressed: () {},
+                          onPressed: () {
+                            Navigator.of(context).push(
+                              ExpenseDetailScreen.route(trip, isAdding: true),
+                            );
+                          },
                           child: const Text('Add Expense'),
                         ),
                       ],

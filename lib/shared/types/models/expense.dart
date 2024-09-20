@@ -47,6 +47,29 @@ class Expense {
       'invoiceImageUrl': invoiceImageUrl,
       'note': note,
       'categoryUids': categoryUids,
+      'categories': categories?.map((category) => category.toJson()).toList(),
     };
+  }
+
+  Expense copyWith({
+    String? uid,
+    String? name,
+    double? budget,
+    double? expense,
+    String? invoiceImageUrl,
+    String? note,
+    List<String>? categoryUids,
+    List<ExpenseCategory>? categories,
+  }) {
+    return Expense(
+      uid: uid ?? this.uid,
+      name: name ?? this.name,
+      budget: budget ?? this.budget,
+      expense: expense ?? this.expense,
+      invoiceImageUrl: invoiceImageUrl ?? this.invoiceImageUrl,
+      note: note ?? this.note,
+      categoryUids: categoryUids ?? this.categoryUids,
+      categories: categories ?? this.categories,
+    );
   }
 }

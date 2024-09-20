@@ -168,12 +168,12 @@ class _TripFormScreenState extends State<TripFormScreen> {
           itemsTextStyle: TextStyle(color: Theme.of(context).primaryColor),
           selectedItemsTextStyle:
               TextStyle(color: Theme.of(context).focusColor),
+          selectedColor: Theme.of(context).focusColor,
           items: users
               .map(
                   (user) => MultiSelectItem<User>(user, user.displayName ?? ''))
               .toList(),
           title: const Text('Select Participants'),
-          selectedColor: Theme.of(context).focusColor,
           decoration: BoxDecoration(
             borderRadius: const BorderRadius.all(Radius.circular(10)),
             border: Border.all(

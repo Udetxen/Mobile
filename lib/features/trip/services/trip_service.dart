@@ -2,6 +2,8 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:rxdart/rxdart.dart';
 import 'package:udetxen/features/auth/services/auth_service.dart';
 import 'package:udetxen/shared/config/constants.dart';
+import 'package:udetxen/shared/types/models/expense.dart';
+import 'package:udetxen/shared/types/models/expense_category.dart';
 import 'package:udetxen/shared/types/models/trip.dart';
 import 'package:udetxen/shared/types/models/user.dart';
 import 'package:udetxen/shared/types/models/venue.dart';
@@ -189,6 +191,10 @@ class TripService {
         .asyncMap((snapshot) async {
       final data = snapshot.data()!;
 
+      data['expenses'] = await getExpenses(data['expenseUids'] != null
+              ? data['expenseUids'].cast<String>()
+              : [])
+          .then((value) => value.map((e) => e.toJson()).toList());
       data['departure'] =
           await getVenue(data['departureUid']).then((value) => value.toJson());
       data['destination'] = await getVenue(data['destinationUid'])
@@ -249,5 +255,34 @@ class TripService {
     final doc = await _firestore.collection(venueCollection).doc(venueId).get();
     final data = doc.data();
     return Venue.fromJson(data!);
+  }
+
+  Future<List<Expense>> getExpenses(List<String> expenseUids) async {
+    final expenses = await Future.wait(expenseUids.map((uid) async {
+      final doc = await _firestore.collection(expenseCollection).doc(uid).get();
+      final data = doc.data();
+      final expense = Expense.fromJson(data!);
+
+      // Fetch and set the categories for the expense
+      if (expense.categoryUids.isNotEmpty) {
+        final categories =
+            await Future.wait(expense.categoryUids.map((categoryUid) async {
+          final categoryDoc = await _firestore
+              .collection(expenseCategoryCollection)
+              .doc(categoryUid)
+              .get();
+          final categoryData = categoryDoc.data();
+          if (categoryData != null) {
+            return ExpenseCategory.fromJson(categoryData);
+          }
+          return null;
+        }).toList());
+        expense.categories = categories.cast<ExpenseCategory>();
+      }
+
+      return expense;
+    }).toList());
+
+    return expenses;
   }
 }
