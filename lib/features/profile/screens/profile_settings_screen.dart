@@ -49,21 +49,82 @@ class _ProfileSettingsScreenState extends State<ProfileSettingsScreen> {
               key: _formKey,
               child: Column(
                 children: [
+                  Stack(
+                    children: [
+                      SizedBox(
+                        width: 120,
+                        height: 120,
+                        child: ClipRRect(
+                          borderRadius: BorderRadius.circular(100),
+                          child: Image(
+                            image: user.photoURL != null
+                                ? NetworkImage(user.photoURL!)
+                                : const NetworkImage(
+                                    'https://pics.freeicons.io/uploads/icons/png/7229900911605810030-512.png'),
+                          ),
+                        ),
+                      ),
+                      Positioned(
+                        bottom: 0,
+                        right: 0,
+                        child: GestureDetector(
+                          onTap: () {
+                            debugPrint('asdasdsa');
+                          },
+                          child: Container(
+                              width: 30,
+                              height: 30,
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(100),
+                                color: const Color.fromARGB(255, 231, 224, 5)
+                                    .withOpacity(1),
+                              ),
+                              child: const Icon(Icons.camera_alt,
+                                  size: 18.0, color: Colors.grey)),
+                        ),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(
+                    height: 20,
+                  ),
                   TextFormField(
                     initialValue: user.displayName,
-                    decoration: getInputDecoration(context, labelText: 'Name'),
+                    decoration: InputDecoration(
+                      border: OutlineInputBorder(borderRadius: BorderRadius.circular(100)),
+                      label:const Text('Name'),
+                      prefixIcon:const Icon(Icons.person_outline_rounded),
+                      prefixIconColor: Colors.blue,
+                      floatingLabelStyle: const TextStyle(color: Colors.black),
+                      focusedBorder: const OutlineInputBorder(
+                        borderSide: BorderSide(width: 2,color: const Color.fromARGB(255, 58, 124, 177))
+                      )
+                    ),
                     onSaved: (value) => _displayName = value,
                   ),
                   const SizedBox(height: 20),
                   TextFormField(
                     initialValue: user.bio,
-                    decoration: getInputDecoration(context, labelText: 'Bio'),
+                    decoration:InputDecoration(
+                      border: OutlineInputBorder(borderRadius: BorderRadius.circular(100)),
+                      label:const Text('Bio'),
+                      prefixIcon:const Icon(Icons.note),
+                      prefixIconColor: Colors.blue,
+                      floatingLabelStyle: const TextStyle(color: Colors.black),
+                      focusedBorder: const OutlineInputBorder(
+                        borderSide: BorderSide(width: 2,color: const Color.fromARGB(255, 58, 124, 177))
+                      )
+                    ),
                     onSaved: (value) => _bio = value,
                   ),
                   const SizedBox(height: 20),
                   ElevatedButton(
                     onPressed: _updateProfile,
-                    child: const Text('Save'),
+                     style: ElevatedButton.styleFrom(
+                              backgroundColor: Colors.yellow[600],
+                              side: BorderSide.none,
+                              shape:  StadiumBorder()),
+                    child:  Text('Save', style: Theme.of(context).textTheme.labelSmall,),
                   ),
                 ],
               ),

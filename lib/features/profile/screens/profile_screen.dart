@@ -25,62 +25,147 @@ class _ProfileScreenState extends State<ProfileScreen> {
   @override
   Widget build(BuildContext context) {
     final authService = getIt<AuthService>();
-
     return StreamBuilder<user_model.User?>(
       stream: authService.userStream,
       builder: (context, snapshot) {
         final user = snapshot.data;
-
+        var img = user?.photoURL;
+        debugPrint('img: $img');
         if (user == null) {
           return const Center(child: CircularProgressIndicator());
         }
-
         return Scaffold(
-          body: Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text('Name: ${user.displayName ?? 'N/A'}'),
-                Text('Email: ${user.email ?? 'N/A'}'),
-                Text('Bio: ${user.bio ?? 'N/A'}'),
-                const SizedBox(height: 20),
-                ElevatedButton(
-                  onPressed: () async {
-                    final result = await Navigator.push(
-                      context,
-                      ProfileSettingsScreen.route(),
-                    );
-
-                    if (result == true) {
-                      await authService.updateUserInStream();
-
-                      final notificationUtil =
-                          Provider.of<NotificationUtil>(context, listen: false);
-
-                      await notificationUtil.showNotification(
-                        title: 'Profile Updated',
-                        body: 'Your profile has been updated successfully.',
-                        payload: 'profile_updated',
-                      );
-                    }
-                  },
-                  child: const Text('Edit Profile'),
-                ),
-                ElevatedButton(
-                  onPressed: () async {
-                    await authService.signOut();
-                    if (mounted) {
-                      Navigator.pushReplacement(context, LoginScreen.route());
-                    }
-                  },
-                  child: const Text('Sign Out'),
-                ),
-              ],
-            ),
+          body: SingleChildScrollView(
+            child: Container(
+                padding: const EdgeInsets.all(4.0),
+                child: Column(
+                  children: [
+                    SizedBox(
+                      width: 120,
+                      height: 120,
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.circular(100),
+                        child: Image(
+                          image: user.photoURL != null
+                              ? NetworkImage(user.photoURL!)
+                              : const NetworkImage(
+                                  'https://pics.freeicons.io/uploads/icons/png/7229900911605810030-512.png'),
+                        ),
+                      ),
+                    ),
+                    const SizedBox(height: 10),
+                    Text(
+                      '${user.displayName ?? 'N/A'}',
+                      style: Theme.of(context).textTheme.headlineSmall,
+                    ),
+                    Text(
+                      '${user.bio ?? 'N/A'}',
+                      style: Theme.of(context).textTheme.bodySmall,
+                    ),
+                    const SizedBox(height: 20),
+                    SizedBox(
+                      width: 200,
+                      child: ElevatedButton(
+                          onPressed: () async {
+                            final result = await Navigator.push(
+                              context,
+                              ProfileSettingsScreen.route(),
+                            );
+                            if (result == true) {
+                              await authService.updateUserInStream();
+                              final notificationUtil =
+                                  Provider.of<NotificationUtil>(context,
+                                      listen: false);
+                              await notificationUtil.showNotification(
+                                title: 'Profile Updated',
+                                body:
+                                    'Your profile has been updated successfully.',
+                                payload: 'profile_updated',
+                              );
+                            }
+                          },
+                          style: ElevatedButton.styleFrom(
+                              backgroundColor: Colors.yellow[600],
+                              side: BorderSide.none,
+                              shape: const StadiumBorder()),
+                          child: Text(
+                            'Edit Profile',
+                            style: Theme.of(context).textTheme.labelSmall,
+                          )),
+                    ),
+                    const SizedBox(height: 30),
+                    const Divider(),
+                    const SizedBox(height: 10),
+                    ListMenu(
+                      onPress: () async {}, 
+                      title: 'Setting', icon: Icons.settings,endIcon: true,
+                    ),
+                    ListMenu(
+                      onPress: () async {}, 
+                      title: 'Information', icon: Icons.info_outline_rounded,endIcon: true,
+                    ),
+                    ListMenu(
+                      onPress: () async {
+                        await authService.signOut();
+                        if (mounted) {
+                          Navigator.pushReplacement(
+                              context, LoginScreen.route());
+                        }
+                      }, title: 'Logout', icon: Icons.logout,endIcon: false,
+                    )
+                  ],
+                )),
           ),
         );
       },
+    );
+  }
+}
+
+class ListMenu extends StatelessWidget {
+  const ListMenu({
+    super.key,
+    required this.onPress,
+    required this.icon,
+    required this.title,
+    this.endIcon = true,
+
+  });
+  final String title;
+  final IconData icon;
+  final bool endIcon;
+  final VoidCallback onPress;
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 24.0),
+      child: ListTile(
+        onTap: onPress,
+        leading: Container(
+          width: 40,
+          height: 40,
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(100),
+            color: Colors.blue.withOpacity(0.1),
+          ),
+          child:  Icon(
+            icon,
+            color: Colors.blue,
+          ),
+        ),
+        title: Text(
+          title,
+          style: Theme.of(context).textTheme.labelSmall,
+        ),
+        trailing: endIcon? Container(
+          width: 30,
+          height: 30,
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(100),
+            color: Colors.grey.withOpacity(0.1),
+          ),
+          child: const Icon(Icons.arrow_right,size: 18.0,color: Colors.grey)): null,
+      ),
     );
   }
 }
