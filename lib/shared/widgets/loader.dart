@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 
 enum LoaderType {
-  chasingDots,
+  dualRing,
   doubleBounce,
   wave,
   wanderingCubes,
@@ -10,44 +10,50 @@ enum LoaderType {
 
 class Loading extends StatelessWidget {
   final LoaderType? loaderType;
+  final bool isFullScreen;
 
-  const Loading({super.key, this.loaderType = LoaderType.chasingDots});
+  const Loading(
+      {super.key,
+      this.loaderType = LoaderType.dualRing,
+      this.isFullScreen = true});
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      color: Colors.brown[100],
-      child: Center(
-        child: _getLoader(),
-      ),
-    );
+    return isFullScreen
+        ? Container(
+            color: Theme.of(context).scaffoldBackgroundColor,
+            child: Center(
+              child: _getLoader(context),
+            ),
+          )
+        : _getLoader(context);
   }
 
-  Widget _getLoader() {
+  Widget _getLoader(BuildContext context) {
     switch (loaderType) {
-      case LoaderType.chasingDots:
-        return const SpinKitChasingDots(
-          color: Colors.brown,
+      case LoaderType.dualRing:
+        return SpinKitDualRing(
+          color: Theme.of(context).primaryColor,
           size: 50.0,
         );
       case LoaderType.doubleBounce:
-        return const SpinKitDoubleBounce(
-          color: Colors.brown,
+        return SpinKitDoubleBounce(
+          color: Theme.of(context).primaryColor,
           size: 50.0,
         );
       case LoaderType.wave:
-        return const SpinKitWave(
-          color: Colors.brown,
+        return SpinKitWave(
+          color: Theme.of(context).primaryColor,
           size: 50.0,
         );
       case LoaderType.wanderingCubes:
-        return const SpinKitWanderingCubes(
-          color: Colors.brown,
+        return SpinKitWanderingCubes(
+          color: Theme.of(context).primaryColor,
           size: 50.0,
         );
       default:
-        return const SpinKitChasingDots(
-          color: Colors.brown,
+        return SpinKitDualRing(
+          color: Theme.of(context).primaryColor,
           size: 50.0,
         );
     }

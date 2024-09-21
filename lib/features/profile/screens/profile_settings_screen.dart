@@ -143,9 +143,6 @@ class _ProfileSettingsScreenState extends State<ProfileSettingsScreen> {
       final profileService = getIt<ProfileService>();
 
       final user = await authService.currentUser;
-      if (user == null) {
-        return;
-      }
 
       final updatedUser = user_model.User(
         uid: user.uid,
