@@ -11,7 +11,7 @@ class TripCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Card(
-      margin: const EdgeInsets.symmetric(vertical: 20.0, horizontal: 16.0),
+      margin: const EdgeInsets.only(left: 16.0, right: 16.0, bottom: 8.0),
       elevation: 4.0,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(10.0),

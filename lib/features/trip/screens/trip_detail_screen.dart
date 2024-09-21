@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:udetxen/features/trip.expense/screens/expense_detail_screen.dart';
-import 'package:udetxen/features/trip/screens/trip_form_screen.dart';
 import 'package:udetxen/features/trip/services/trip_service.dart';
 import 'package:udetxen/shared/config/service_locator.dart';
 import 'package:udetxen/shared/types/models/trip.dart';
+
+import '../widgets/trip_detail_budget_card.dart';
+import '../widgets/trip_detail_header.dart';
+import '../widgets/trip_detail_image_card.dart';
 
 class TripDetailScreen extends StatefulWidget {
   static route(String tripUid) {
@@ -59,189 +61,27 @@ class _TripDetailScreenState extends State<TripDetailScreen> {
           return ListView(
             padding: const EdgeInsets.all(16.0),
             children: [
-              // Trip Name and Action Button
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Expanded(
-                    child: Text(
-                      trip.name,
-                      style: const TextStyle(
-                        fontSize: 24,
-                        fontWeight: FontWeight.bold,
-                      ),
-                      overflow: TextOverflow.ellipsis,
-                    ),
-                  ),
-                  if (trip.creatorUid == null)
-                    ElevatedButton(
-                      onPressed: () async {
-                        final forkedTrip = await _tripService.forkTrip(trip);
-
-                        Navigator.of(context).pushReplacement(
-                          TripFormScreen.route(trip: forkedTrip),
-                        );
-                      },
-                      child: const Text('Make a Plan'),
-                    ),
-                ],
-              ),
+              TripDetailHeader(trip: trip, tripService: _tripService),
               const SizedBox(height: 16),
-
-              Card(
-                margin: const EdgeInsets.only(bottom: 16.0),
-                elevation: 4.0,
-                child: Padding(
-                  padding: const EdgeInsets.all(16.0),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        'Budget: \$${trip.budget.toStringAsFixed(2)}',
-                        style: const TextStyle(fontSize: 18),
-                      ),
-                      const SizedBox(height: 8),
-                      if (totalExpense != null) ...[
-                        Text(
-                          'Total Expense: \$${totalExpense.toStringAsFixed(2)}',
-                          style: const TextStyle(fontSize: 18),
-                        ),
-                        ElevatedButton(
-                          onPressed: () {
-                            Navigator.of(context).push(
-                              ExpenseDetailScreen.route(trip),
-                            );
-                          },
-                          child: const Text('View Expenses'),
-                        ),
-                      ] else ...[
-                        ElevatedButton(
-                          onPressed: () {
-                            Navigator.of(context).push(
-                              ExpenseDetailScreen.route(trip, isAdding: true),
-                            );
-                          },
-                          child: const Text('Add Expense'),
-                        ),
-                      ],
-                      Text(
-                        'Start Date: ${trip.startDate?.toLocal().toString().split(' ')[0] ?? 'N/A'}',
-                        style: const TextStyle(fontSize: 18),
-                      ),
-                      const SizedBox(height: 8),
-                      Text(
-                        'Duration: ${trip.duration} days',
-                        style: const TextStyle(fontSize: 18),
-                      ),
-                      const SizedBox(height: 8),
-                      Text(
-                        trip.type,
-                        style: const TextStyle(fontSize: 18),
-                      ),
-                      if (trip.type == 'group' &&
-                          participation?.personalBudget == null)
-                        ElevatedButton(
-                            onPressed: () {},
-                            child: const Text('create your personal budget'))
-                    ],
-                  ),
-                ),
-              ),
-
-              // Departure Images
+              TripDetailBudgetCard(trip: trip, totalExpense: totalExpense),
+              const SizedBox(height: 16),
               if (trip.departure != null &&
                   trip.departure!.imageUrls.isNotEmpty)
-                Card(
-                  margin: const EdgeInsets.only(bottom: 16.0),
-                  elevation: 4.0,
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      _buildImageCarousel(trip.departure!.imageUrls,
-                          'From ${trip.departure!.name}'),
-                      Padding(
-                        padding: const EdgeInsets.all(16.0),
-                        child: Text(
-                          'Departure: ${trip.departure!.name}',
-                          style: const TextStyle(fontSize: 18),
-                        ),
-                      ),
-                    ],
-                  ),
+                TripDetailImageCard(
+                  imageUrls: trip.departure!.imageUrls,
+                  title: 'From ${trip.departure!.name}',
+                  locationName: trip.departure!.name,
                 ),
-
-              // Destination Images
               if (trip.destination != null &&
                   trip.destination!.imageUrls.isNotEmpty)
-                Card(
-                  margin: const EdgeInsets.only(bottom: 16.0),
-                  elevation: 4.0,
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      _buildImageCarousel(trip.destination!.imageUrls,
-                          'To ${trip.destination!.name}'),
-                      Padding(
-                        padding: const EdgeInsets.all(16.0),
-                        child: Text(
-                          'Destination: ${trip.destination!.name}',
-                          style: const TextStyle(fontSize: 18),
-                        ),
-                      ),
-                    ],
-                  ),
+                TripDetailImageCard(
+                  imageUrls: trip.destination!.imageUrls,
+                  title: 'To ${trip.destination!.name}',
+                  locationName: trip.destination!.name,
                 ),
-
-              // Additional Trip Details
             ],
           );
         },
-      ),
-    );
-  }
-
-  Widget _buildImageCarousel(List<String> imageUrls, String title) {
-    return Container(
-      height: 200.0, // Adjust height as needed
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(12.0),
-        border: Border.all(color: Colors.grey.shade300),
-      ),
-      padding: const EdgeInsets.only(left: 8, right: 8),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Text(
-              title,
-              style: const TextStyle(
-                fontSize: 16,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-          ),
-          Expanded(
-            child: ListView.builder(
-              scrollDirection: Axis.horizontal,
-              itemCount: imageUrls.length,
-              itemBuilder: (context, index) {
-                return Container(
-                  margin: const EdgeInsets.only(right: 8.0),
-                  child: ClipRRect(
-                    borderRadius: BorderRadius.circular(12.0),
-                    child: Image.network(
-                      imageUrls[index],
-                      fit: BoxFit.cover,
-                      width: MediaQuery.of(context).size.width *
-                          0.8, // Adjust width as needed
-                    ),
-                  ),
-                );
-              },
-            ),
-          ),
-        ],
       ),
     );
   }

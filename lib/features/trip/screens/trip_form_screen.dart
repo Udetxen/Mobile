@@ -210,162 +210,175 @@ class _TripFormScreenState extends State<TripFormScreen> {
         title: const Text('Trip Form'),
         backgroundColor: Theme.of(context).hintColor,
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Form(
-          key: _formKey,
-          child: ListView(
-            children: [
-              TextFormField(
-                controller: _nameController,
-                decoration: getInputDecoration(context, labelText: 'Trip Name'),
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Please enter a trip name';
-                  }
-                  return null;
-                },
-              ),
-              TextFormField(
-                controller: _startDateController,
-                decoration:
-                    getInputDecoration(context, labelText: 'Start Date'),
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Please enter a start date';
-                  }
-                  return null;
-                },
-                readOnly: true,
-                onTap: () async {
-                  DateTime? pickedDate = await showDatePicker(
-                    context: context,
-                    initialDate: DateTime.now(),
-                    firstDate: DateTime(2000),
-                    lastDate: DateTime(2101),
-                  );
-
-                  if (pickedDate != null) {
-                    setState(() {
-                      _startDateController.text =
-                          pickedDate.toLocal().toString().split(' ')[0];
-                    });
-                  }
-                },
-              ),
-              TextFormField(
-                controller: _durationController,
-                decoration:
-                    getInputDecoration(context, labelText: 'Duration (days)'),
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Please enter the duration';
-                  }
-                  return null;
-                },
-              ),
-              TextFormField(
-                controller: _budgetController,
-                decoration: getInputDecoration(context, labelText: 'Budget'),
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Please enter a budget';
-                  }
-                  return null;
-                },
-              ),
-              DropdownButtonFormField<String>(
-                value:
-                    _typeController.text.isEmpty ? null : _typeController.text,
-                decoration: getInputDecoration(context,
-                    labelText: 'Type (individual/group)'),
-                items: ['individual', 'group'].map((String value) {
-                  return DropdownMenuItem<String>(
-                    value: value,
-                    child: Text(value),
-                  );
-                }).toList(),
-                onChanged: (newValue) {
-                  setState(() {
-                    _typeController.text = newValue!;
-                    if (newValue == 'group') {
-                      _userFuture =
-                          _tripService.getUsers(widget.trip?.uid ?? '').first;
+      body: Center(
+        child: SingleChildScrollView(
+          padding: const EdgeInsets.all(16.0),
+          child: Form(
+            key: _formKey,
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                TextFormField(
+                  controller: _nameController,
+                  decoration:
+                      getInputDecoration(context, labelText: 'Trip Name'),
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Please enter a trip name';
                     }
-                  });
-                },
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Please select the type';
-                  }
-                  return null;
-                },
-              ),
-              if (_typeController.text == 'group') _buildParticipantSelector(),
-              const SizedBox(height: 20),
-              _buildVenueDropdown(
-                label: 'Departure Venue',
-                selectedVenue: _selectedDepartureVenue,
-                onChanged: (venue) {
-                  setState(() {
-                    _selectedDepartureVenue = venue;
-                  });
-                },
-              ),
-              const SizedBox(height: 20),
-              _buildVenueDropdown(
-                label: 'Destination Venue',
-                selectedVenue: _selectedDestinationVenue,
-                onChanged: (venue) {
-                  setState(() {
-                    _selectedDestinationVenue = venue;
-                  });
-                },
-              ),
-              const SizedBox(height: 20),
-              ElevatedButton(
-                onPressed: () async {
-                  if (_formKey.currentState!.validate()) {
-                    final newTripUid = widget.trip == null
-                        ? await _tripService.createTrip(Trip(
-                            name: _nameController.text,
-                            startDate:
-                                DateTime.parse(_startDateController.text),
-                            duration: int.parse(_durationController.text),
-                            budget: double.parse(_budgetController.text),
-                            type: _typeController.text,
-                            departureUid: _selectedDepartureVenue!.uid!,
-                            destinationUid: _selectedDestinationVenue!.uid!,
-                            participants: _selectedParticipants.isNotEmpty
-                                ? _selectedParticipants
-                                    .map((u) =>
-                                        Participant(participantUid: u.uid!))
-                                    .toList()
-                                : null,
-                          ))
-                        : await _tripService
-                            .updateForkedTrip(widget.trip!.copyWith(
-                            uid: widget.trip!.uid,
-                            name: _nameController.text,
-                            startDate:
-                                DateTime.parse(_startDateController.text),
-                            duration: int.parse(_durationController.text),
-                            budget: double.parse(_budgetController.text),
-                            type: _typeController.text,
-                            departureUid: _selectedDepartureVenue!.uid!,
-                            destinationUid: _selectedDestinationVenue!.uid!,
-                            participants: _selectedParticipants
-                                .map((u) => Participant(participantUid: u.uid!))
-                                .toList(),
-                          ));
+                    return null;
+                  },
+                ),
+                const SizedBox(height: 16),
+                TextFormField(
+                  controller: _startDateController,
+                  decoration:
+                      getInputDecoration(context, labelText: 'Start Date'),
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Please enter a start date';
+                    }
+                    return null;
+                  },
+                  readOnly: true,
+                  onTap: () async {
+                    DateTime? pickedDate = await showDatePicker(
+                      context: context,
+                      initialDate: DateTime.now(),
+                      firstDate: DateTime(2000),
+                      lastDate: DateTime(2101),
+                    );
 
-                    Navigator.of(context)
-                        .pushReplacement(TripDetailScreen.route(newTripUid));
-                  }
-                },
-                child: const Text('Submit'),
-              ),
-            ],
+                    if (pickedDate != null) {
+                      setState(() {
+                        _startDateController.text =
+                            pickedDate.toLocal().toString().split(' ')[0];
+                      });
+                    }
+                  },
+                ),
+                const SizedBox(height: 16),
+                TextFormField(
+                  controller: _durationController,
+                  decoration:
+                      getInputDecoration(context, labelText: 'Duration (days)'),
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Please enter the duration';
+                    }
+                    return null;
+                  },
+                ),
+                const SizedBox(height: 16),
+                TextFormField(
+                  controller: _budgetController,
+                  decoration: getInputDecoration(context, labelText: 'Budget'),
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Please enter a budget';
+                    }
+                    return null;
+                  },
+                ),
+                const SizedBox(height: 16),
+                DropdownButtonFormField<String>(
+                  value: _typeController.text.isEmpty
+                      ? null
+                      : _typeController.text,
+                  decoration: getInputDecoration(context,
+                      labelText: 'Type (individual/group)'),
+                  items: ['individual', 'group'].map((String value) {
+                    return DropdownMenuItem<String>(
+                      value: value,
+                      child: Text(value),
+                    );
+                  }).toList(),
+                  onChanged: (newValue) {
+                    setState(() {
+                      _typeController.text = newValue!;
+                      if (newValue == 'group') {
+                        _userFuture =
+                            _tripService.getUsers(widget.trip?.uid ?? '').first;
+                      }
+                    });
+                  },
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Please select the type';
+                    }
+                    return null;
+                  },
+                ),
+                if (_typeController.text == 'group') ...[
+                  const SizedBox(height: 16),
+                  _buildParticipantSelector(),
+                ],
+                const SizedBox(height: 16),
+                _buildVenueDropdown(
+                  label: 'Departure Venue',
+                  selectedVenue: _selectedDepartureVenue,
+                  onChanged: (venue) {
+                    setState(() {
+                      _selectedDepartureVenue = venue;
+                    });
+                  },
+                ),
+                const SizedBox(height: 16),
+                _buildVenueDropdown(
+                  label: 'Destination Venue',
+                  selectedVenue: _selectedDestinationVenue,
+                  onChanged: (venue) {
+                    setState(() {
+                      _selectedDestinationVenue = venue;
+                    });
+                  },
+                ),
+                const SizedBox(height: 32),
+                ElevatedButton(
+                  onPressed: () async {
+                    if (_formKey.currentState!.validate()) {
+                      final newTripUid = widget.trip == null
+                          ? await _tripService.createTrip(Trip(
+                              name: _nameController.text,
+                              startDate:
+                                  DateTime.parse(_startDateController.text),
+                              duration: int.parse(_durationController.text),
+                              budget: double.parse(_budgetController.text),
+                              type: _typeController.text,
+                              departureUid: _selectedDepartureVenue!.uid!,
+                              destinationUid: _selectedDestinationVenue!.uid!,
+                              participants: _selectedParticipants.isNotEmpty
+                                  ? _selectedParticipants
+                                      .map((u) =>
+                                          Participant(participantUid: u.uid!))
+                                      .toList()
+                                  : null,
+                            ))
+                          : await _tripService
+                              .updateForkedTrip(widget.trip!.copyWith(
+                              uid: widget.trip!.uid,
+                              name: _nameController.text,
+                              startDate:
+                                  DateTime.parse(_startDateController.text),
+                              duration: int.parse(_durationController.text),
+                              budget: double.parse(_budgetController.text),
+                              type: _typeController.text,
+                              departureUid: _selectedDepartureVenue!.uid!,
+                              destinationUid: _selectedDestinationVenue!.uid!,
+                              participants: _selectedParticipants
+                                  .map((u) =>
+                                      Participant(participantUid: u.uid!))
+                                  .toList(),
+                            ));
+
+                      Navigator.of(context)
+                          .pushReplacement(TripDetailScreen.route(newTripUid));
+                    }
+                  },
+                  child: const Text('Submit'),
+                ),
+              ],
+            ),
           ),
         ),
       ),

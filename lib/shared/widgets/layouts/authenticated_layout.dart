@@ -33,7 +33,8 @@ class _AuthenticatedLayoutState extends State<AuthenticatedLayout> {
   final List<Widget> _adminScreens = [
     const UserManagementScreen(),
     const VenueListScreen(),
-    const DashboardTripListScreen()
+    const DashboardTripListScreen(),
+    const ProfileScreen(),
   ];
 
   @override
@@ -81,6 +82,10 @@ class _AuthenticatedLayoutState extends State<AuthenticatedLayout> {
                 const BottomNavigationBarItem(
                   icon: Icon(Icons.tour),
                   label: 'Tours',
+                ),
+                const BottomNavigationBarItem(
+                  icon: Icon(Icons.person),
+                  label: 'Profile',
                 ),
               ]
             : [

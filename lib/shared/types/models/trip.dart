@@ -71,7 +71,7 @@ class Trip {
       expenses: json['expenses'] != null
           ? (json['expenses'] as List).map((e) => Expense.fromJson(e)).toList()
           : null,
-      budget: json['budget'],
+      budget: json['budget'] != null ? (json['budget'] as num).toDouble() : 0,
       type: json['type'],
       participants: json['participants'] != null
           ? (json['participants'] as List)
@@ -180,6 +180,7 @@ class Participant {
       'participantUid': participantUid,
       'personalBudget': personalBudget,
       'expenseUids': expenseUids?.map((e) => e.toString()).toList(),
+      'expenses': expenses?.map((e) => e.toJson()).toList(),
     };
   }
 }

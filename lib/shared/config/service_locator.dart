@@ -70,7 +70,7 @@ Future<void> setupLocator() async {
       () => TripService(getIt<FirebaseFirestore>(), getIt<AuthService>()));
 
   getIt.registerFactory<ExpenseService>(
-      () => ExpenseService(getIt<FirebaseFirestore>()));
+      () => ExpenseService(getIt<FirebaseFirestore>(), getIt<AuthService>()));
 
   getIt.registerFactory<ReportService>(
       () => ReportService(getIt<FirebaseFirestore>()));

@@ -53,6 +53,25 @@ class TripService {
         Participant(participantUid: trip.creatorUid!),
       ];
     }
+
+    if (trip.expenseUids != null && trip.expenseUids!.isNotEmpty) {
+      final newExpenseUids =
+          await Future.wait(trip.expenseUids!.map((uid) async {
+        final expenseDoc =
+            await _firestore.collection(expenseCollection).doc(uid).get();
+        final expenseData = expenseDoc.data();
+        if (expenseData != null) {
+          final newExpenseDoc = _firestore.collection(expenseCollection).doc();
+          final newExpense = Expense.fromJson(expenseData);
+          newExpense.uid = newExpenseDoc.id;
+          await newExpenseDoc.set(newExpense.toJson());
+          return newExpense.uid;
+        }
+        return null;
+      }).toList());
+      trip.expenseUids = newExpenseUids.whereType<String>().toList();
+    }
+
     await docRef.set(trip.toJson());
 
     return trip;
@@ -199,6 +218,20 @@ class TripService {
           await getVenue(data['departureUid']).then((value) => value.toJson());
       data['destination'] = await getVenue(data['destinationUid'])
           .then((value) => value.toJson());
+
+      if (data['participants'] != null) {
+        data['participants'] = await Future.wait(
+          (data['participants'] as List<dynamic>).map((participantData) async {
+            final participant = Participant.fromJson(participantData);
+
+            participant.expenses = participant.expenseUids != null
+                ? await getExpenses(participant.expenseUids!)
+                : [];
+
+            return participant.toJson();
+          }).toList(),
+        );
+      }
 
       return Trip.fromJson(data);
     });

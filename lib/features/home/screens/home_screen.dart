@@ -7,6 +7,7 @@ import 'package:udetxen/shared/types/models/trip.dart';
 import 'package:udetxen/shared/types/models/venue.dart';
 
 import 'package:udetxen/shared/widgets/layouts/authenticated_layout.dart';
+import 'package:udetxen/shared/widgets/loader.dart';
 
 class HomeScreen extends StatefulWidget {
   static route() {
@@ -46,7 +47,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 stream: _homeService.availableTours(),
                 builder: (context, snapshot) {
                   if (snapshot.connectionState == ConnectionState.waiting) {
-                    return const Center(child: CircularProgressIndicator());
+                    return const Loading(isFullScreen: false);
                   }
                   if (!snapshot.hasData || snapshot.data!.isEmpty) {
                     return const Text('No available tours');
@@ -129,7 +130,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 stream: _homeService.popularVenues(),
                 builder: (context, snapshot) {
                   if (snapshot.connectionState == ConnectionState.waiting) {
-                    return const Center(child: CircularProgressIndicator());
+                    return const Loading(isFullScreen: false);
                   }
                   if (!snapshot.hasData || snapshot.data!.isEmpty) {
                     return const Text('No popular venues');

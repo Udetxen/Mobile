@@ -44,7 +44,7 @@ class _TripListScreenState extends State<TripListScreen> {
 
   void _onStatusChanged(TripStatus? status) {
     setState(() {
-      _selectedStatus = status;
+      _selectedStatus = status == _selectedStatus ? null : status;
       _fetchTrips();
     });
   }
@@ -54,37 +54,77 @@ class _TripListScreenState extends State<TripListScreen> {
     return Scaffold(
       body: Column(
         children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: DropdownButton<TripStatus?>(
-                  hint: const Text('Select Trip Status'),
-                  value: _selectedStatus,
-                  onChanged: _onStatusChanged,
-                  items: [
-                    const DropdownMenuItem<TripStatus?>(
-                      value: null,
-                      child: Text('All'),
+          Container(
+            padding: const EdgeInsets.all(12.0),
+            child: GridView.count(
+              crossAxisCount: 3,
+              shrinkWrap: true,
+              childAspectRatio: 3,
+              mainAxisSpacing: 12.0,
+              crossAxisSpacing: 12.0,
+              children: TripStatus.values.map((TripStatus status) {
+                String statusLabel = status.toString().split('.').last;
+                switch (status) {
+                  case TripStatus.active:
+                    statusLabel = 'Active';
+                    break;
+                  case TripStatus.completed:
+                    statusLabel = 'Completed';
+                    break;
+                  case TripStatus.notStarted:
+                    statusLabel = 'Not Started';
+                    break;
+                }
+
+                bool isSelected = _selectedStatus == status;
+
+                return GestureDetector(
+                  onTap: () {
+                    _onStatusChanged(status);
+                  },
+                  child: AnimatedContainer(
+                    duration: const Duration(milliseconds: 200),
+                    decoration: BoxDecoration(
+                      color: isSelected
+                          ? Theme.of(context).focusColor.withOpacity(0.2)
+                          : Theme.of(context).scaffoldBackgroundColor,
+                      borderRadius: BorderRadius.circular(5),
+                      border: Border.all(
+                        color: Theme.of(context)
+                            .focusColor
+                            .withOpacity(isSelected ? 1.0 : 0.7),
+                        width: 2.0,
+                      ),
+                      boxShadow: isSelected
+                          ? [
+                              BoxShadow(
+                                color: Theme.of(context)
+                                    .focusColor
+                                    .withOpacity(0.3),
+                                blurRadius: 8,
+                                offset: const Offset(0, 4),
+                              )
+                            ]
+                          : [],
                     ),
-                    ...TripStatus.values.map((TripStatus status) {
-                      return DropdownMenuItem<TripStatus?>(
-                        value: status,
-                        child: Text(status.toString().split('.').last),
-                      );
-                    }),
-                  ],
-                ),
-              ),
-              IconButton(
-                icon: const Icon(Icons.add),
-                onPressed: () {
-                  Navigator.of(context).push(TripFormScreen.route());
-                },
-              ),
-            ],
+                    child: Center(
+                      child: Text(
+                        statusLabel,
+                        style: TextStyle(
+                          color: Theme.of(context).primaryColor,
+                          fontWeight:
+                              isSelected ? FontWeight.bold : FontWeight.w400,
+                          fontSize: 15,
+                        ),
+                        textAlign: TextAlign.center,
+                      ),
+                    ),
+                  ),
+                );
+              }).toList(),
+            ),
           ),
+          const SizedBox(height: 8.0),
           Expanded(
             child: FutureBuilder<Stream<List<Trip>>>(
               future: _tripsFuture,
@@ -124,6 +164,14 @@ class _TripListScreenState extends State<TripListScreen> {
             ),
           ),
         ],
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          Navigator.of(context).push(TripFormScreen.route());
+        },
+        backgroundColor: Theme.of(context).primaryColor,
+        foregroundColor: Theme.of(context).scaffoldBackgroundColor,
+        child: const Icon(Icons.add),
       ),
     );
   }

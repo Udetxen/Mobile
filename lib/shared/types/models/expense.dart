@@ -25,8 +25,8 @@ class Expense {
     return Expense(
       uid: json['uid'],
       name: json['name'],
-      budget: json['budget'],
-      expense: json['expense'],
+      budget: json['budget'] != null ? (json['budget'] as num).toDouble() : 0,
+      expense: json['expense'] != null ? json['expense'] as double : null,
       invoiceImageUrl: json['invoiceImageUrl'],
       note: json['note'],
       categoryUids: List<String>.from(json['categoryUids']),

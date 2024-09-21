@@ -15,11 +15,15 @@ class AppTheme {
     hintColor: AppColors.hint,
     hoverColor: AppColors.hover,
     shadowColor: AppColors.shadow,
-    splashColor: AppColors.splash,
+    splashColor: AppColors.primaryLight,
     unselectedWidgetColor: AppColors.unselectedWidget,
     appBarTheme: const AppBarTheme(
       color: AppColors.primaryLight,
       iconTheme: IconThemeData(color: AppColors.cardDark),
+    ),
+    snackBarTheme: const SnackBarThemeData(
+      backgroundColor: AppColors.primaryLight,
+      contentTextStyle: TextStyle(color: AppColors.cardDark),
     ),
     bottomNavigationBarTheme: const BottomNavigationBarThemeData(
       unselectedItemColor: AppColors.hint,
@@ -78,11 +82,15 @@ class AppTheme {
     hintColor: AppColors.hint,
     hoverColor: AppColors.hover,
     shadowColor: AppColors.shadow,
-    splashColor: AppColors.splash,
+    splashColor: AppColors.primaryDark,
     unselectedWidgetColor: AppColors.unselectedWidget,
     appBarTheme: const AppBarTheme(
       color: AppColors.primaryDark,
       iconTheme: IconThemeData(color: AppColors.card),
+    ),
+    snackBarTheme: const SnackBarThemeData(
+      backgroundColor: AppColors.primaryDark,
+      contentTextStyle: TextStyle(color: AppColors.card),
     ),
     bottomNavigationBarTheme: const BottomNavigationBarThemeData(
       unselectedItemColor: AppColors.hint,
