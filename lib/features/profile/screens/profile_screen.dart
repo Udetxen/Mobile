@@ -57,7 +57,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     ),
                     const SizedBox(height: 10),
                     Text(
-                      '${user.displayName ?? 'N/A'} ${user.role == 'ADMIN' ? '(Admin)' : ''}',
+                      '${user.displayName ?? 'N/A'} ${user.isAdmin ? '(Admin)' : ''}',
                       style: Theme.of(context).textTheme.headlineSmall,
                     ),
                     Text(

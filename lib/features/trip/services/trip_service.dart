@@ -103,6 +103,16 @@ class TripService {
     return trip.uid!;
   }
 
+  Future<String> updateTrip(Trip trip) {
+    trip.updatedAt = DateTime.now();
+
+    return _firestore
+        .collection(tripCollection)
+        .doc(trip.uid)
+        .update(trip.toJson())
+        .then((_) => trip.uid!);
+  }
+
   Future<void> deleteTrip(String tripId) async {
     await _firestore.collection(tripCollection).doc(tripId).delete();
   }

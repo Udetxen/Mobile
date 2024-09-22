@@ -1,7 +1,14 @@
 import 'package:flutter/material.dart';
 
 class DashboardTripDetailScreen extends StatefulWidget {
-  const DashboardTripDetailScreen({super.key});
+  final String tripId;
+  static route(String tripId) {
+    return MaterialPageRoute<void>(
+      builder: (_) => DashboardTripDetailScreen(tripId: tripId),
+    );
+  }
+
+  const DashboardTripDetailScreen({super.key, required this.tripId});
 
   @override
   State<DashboardTripDetailScreen> createState() =>
