@@ -85,14 +85,15 @@ class _PersonalExpenseFormDialogState extends State<PersonalExpenseFormDialog> {
                   controller: _budgetController,
                 ),
                 const SizedBox(height: 8),
-                TextField(
-                  decoration: getInputDecoration(context,
-                      labelText:
-                          'Expense Amount ${widget.expense == null ? '(Optional)' : ''}'),
-                  keyboardType: TextInputType.number,
-                  controller: _expenseAmountController,
-                  autofocus: widget.expense != null,
-                ),
+                if (widget.expense == null)
+                  TextField(
+                    decoration: getInputDecoration(context,
+                        labelText:
+                            'Expense Amount ${widget.expense == null ? '(Optional)' : ''}'),
+                    keyboardType: TextInputType.number,
+                    controller: _expenseAmountController,
+                    autofocus: widget.expense != null,
+                  ),
                 const SizedBox(height: 8),
                 MultiSelectDialogField(
                   items: _categories

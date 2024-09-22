@@ -5,6 +5,7 @@ import 'package:udetxen/features/trip.expense/widgets/budget_summary.dart';
 import 'package:udetxen/shared/config/service_locator.dart';
 import 'package:udetxen/shared/config/theme/colors.dart';
 import 'package:udetxen/shared/types/models/trip.dart';
+import 'package:udetxen/shared/widgets/loader.dart';
 
 import 'personal_expense.dart';
 
@@ -20,8 +21,23 @@ class TripDetailBudgetCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    return FutureBuilder(
+      future: _buildContent(context),
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return const Center(child: const Loading());
+        } else if (snapshot.hasError) {
+          return Center(child: Text('Error: ${snapshot.error}'));
+        } else {
+          return snapshot.data as Widget;
+        }
+      },
+    );
+  }
+
+  Future<Widget> _buildContent(BuildContext context) async {
     final authService = getIt<AuthService>();
-    final currentUserId = authService.currentUserUid;
+    final currentUser = await authService.currentUser;
 
     double remainingBudget = trip.budget - (totalExpense ?? 0.0);
     double progress = ((totalExpense ?? 0.0) / trip.budget);
@@ -33,7 +49,7 @@ class TripDetailBudgetCard extends StatelessWidget {
               trip.participants?.isNotEmpty == true &&
               trip.creatorUid != null
           ? trip.participants
-              ?.firstWhere((p) => p.participantUid == currentUserId)
+              ?.firstWhere((p) => p.participantUid == currentUser.uid!)
           : null;
     }
 
@@ -50,7 +66,8 @@ class TripDetailBudgetCard extends StatelessWidget {
                 totalExpense: totalExpense,
                 remainingBudget: remainingBudget,
                 progress: progress,
-                expenseAction: totalExpense == null || totalExpense == 0.0
+                expenseAction: (totalExpense == null || totalExpense == 0.0) &&
+                        (currentUser.isAdmin || trip.creatorUid != null)
                     ? ElevatedButton.icon(
                         onPressed: () {
                           Navigator.of(context).push(

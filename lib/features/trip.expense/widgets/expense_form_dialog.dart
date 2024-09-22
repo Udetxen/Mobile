@@ -84,14 +84,15 @@ class _ExpenseFormDialogState extends State<ExpenseFormDialog> {
                   controller: _budgetController,
                 ),
                 const SizedBox(height: 8),
-                TextField(
-                  decoration: getInputDecoration(context,
-                      labelText:
-                          'Expense Amount ${widget.expense == null ? '(Optional)' : ''}'),
-                  keyboardType: TextInputType.number,
-                  controller: _expenseAmountController,
-                  autofocus: widget.expense != null,
-                ),
+                if (widget.expense == null)
+                  TextField(
+                    decoration: getInputDecoration(context,
+                        labelText:
+                            'Expense Amount ${widget.expense == null ? '(Optional)' : ''}'),
+                    keyboardType: TextInputType.number,
+                    controller: _expenseAmountController,
+                    autofocus: widget.expense != null,
+                  ),
                 const SizedBox(height: 8),
                 MultiSelectDialogField(
                   items: _categories
@@ -147,11 +148,11 @@ class _ExpenseFormDialogState extends State<ExpenseFormDialog> {
                           widget.expense!.copyWith(
                             name: _expenseNameController.text,
                             budget: double.parse(_budgetController.text),
-                            expense: double.tryParse(
-                                        _expenseAmountController.text) !=
-                                    0
-                                ? double.tryParse(_expenseAmountController.text)
-                                : null,
+                            // expense: double.tryParse(
+                            //             _expenseAmountController.text) !=
+                            //         0
+                            //     ? double.tryParse(_expenseAmountController.text)
+                            //     : null,
                             categoryUids: _selectedCategoryUids,
                           ),
                         );

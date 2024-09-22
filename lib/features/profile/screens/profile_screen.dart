@@ -8,6 +8,7 @@ import 'package:udetxen/shared/widgets/layouts/authenticated_layout.dart';
 import 'package:provider/provider.dart';
 import 'package:udetxen/shared/types/models/user.dart' as user_model;
 import 'profile_settings_screen.dart';
+import '../../report/screens/report_screen.dart';
 
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});
@@ -56,11 +57,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     ),
                     const SizedBox(height: 10),
                     Text(
-                      '${user.displayName ?? 'N/A'}',
+                      '${user.displayName ?? 'N/A'} ${user.isAdmin ? '(Admin)' : ''}',
                       style: Theme.of(context).textTheme.headlineSmall,
                     ),
                     Text(
-                      '${user.bio ?? 'N/A'}',
+                      user.bio ?? 'N/A',
                       style: Theme.of(context).textTheme.bodySmall,
                     ),
                     const SizedBox(height: 20),
@@ -102,6 +103,19 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     const SizedBox(height: 30),
                     const Divider(),
                     const SizedBox(height: 10),
+                    if (user.isUser)
+                      ListMenu(
+                        onPress: () {
+                          // Navigate to the report screen
+                          Navigator.push(
+                            context,
+                            ReportScreen.route(),
+                          );
+                        },
+                        title: 'Report',
+                        icon: Icons.report,
+                        endIcon: true,
+                      ),
                     // ListMenu(
                     //   onPress: () async {},
                     //   title: 'Setting',
