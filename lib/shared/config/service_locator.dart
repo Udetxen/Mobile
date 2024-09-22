@@ -63,8 +63,8 @@ Future<void> setupLocator() async {
   getIt.registerFactory<DashboardUserService>(
       () => DashboardUserService(getIt<FirebaseFirestore>()));
 
-  getIt.registerFactory<DashboardVenueService>(
-      () => DashboardVenueService(getIt<FirebaseFirestore>()));
+  getIt.registerFactory<DashboardVenueService>(() => DashboardVenueService(
+      getIt<FirebaseFirestore>(), getIt<FirebaseStorage>()));
 
   getIt.registerFactory<HomeService>(
       () => HomeService(getIt<FirebaseFirestore>()));
