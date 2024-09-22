@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:udetxen/features/trip.expense/services/expense_service.dart';
 import 'package:udetxen/features/trip/screens/trip_detail_screen.dart';
-import 'package:udetxen/main.dart';
 import 'package:udetxen/shared/config/service_locator.dart';
 import 'package:udetxen/shared/types/models/expense.dart';
 import 'package:udetxen/shared/types/models/trip.dart';

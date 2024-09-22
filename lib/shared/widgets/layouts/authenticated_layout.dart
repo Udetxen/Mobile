@@ -55,7 +55,13 @@ class _AuthenticatedLayoutState extends State<AuthenticatedLayout> {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('App'),
+        title: const Text('UDetxen'),
+        leading: const Padding(
+          padding: EdgeInsets.only(left: 12.0, bottom: 5),
+          child: CircleAvatar(
+            backgroundImage: AssetImage('assets/images/logo.jpg'),
+          ),
+        ),
         actions: [
           IconButton(
             icon: const Icon(Icons.brightness_6),

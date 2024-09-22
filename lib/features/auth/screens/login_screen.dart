@@ -85,11 +85,12 @@ class _LoginScreen1State extends State<LoginScreen> {
             Provider.of<NotificationUtil>(context, listen: false);
         await notificationUtil.showNotification(
           title: 'Password Reset Email Sent',
-          body: 'A password reset email has been sent to ${name}',
+          body: 'A password reset email has been sent to $name',
           payload: 'password_reset',
         );
         return null;
       }
+      return null;
     });
   }
 
@@ -104,7 +105,7 @@ class _LoginScreen1State extends State<LoginScreen> {
         primaryColor: const Color.fromARGB(255, 33, 33, 238),
         accentColor: Colors.white,
       ),
-      title: 'TNTravel',
+      title: 'UDetxen',
       logo: const AssetImage('assets/images/logo.jpg'),
       onLogin: _authUser,
       onSignup: _signupUser,
@@ -132,6 +133,7 @@ class _LoginScreen1State extends State<LoginScreen> {
             debugPrint('start google sign in');
             await Future.delayed(loginTime);
             debugPrint('stop google sign in');
+            return null;
           },
         ),
         // LoginProvider(
@@ -163,7 +165,6 @@ class _LoginScreen1State extends State<LoginScreen> {
         //   },
         // ),
       ],
-
       onSubmitAnimationCompleted: () {
         Navigator.pushReplacement(context, HomeScreen.route());
       },

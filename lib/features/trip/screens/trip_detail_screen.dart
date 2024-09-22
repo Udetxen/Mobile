@@ -46,12 +46,6 @@ class _TripDetailScreenState extends State<TripDetailScreen> {
           }
 
           final trip = snapshot.data!;
-          final participation = trip.participants != null &&
-                  trip.participants?.isNotEmpty == true &&
-                  trip.creatorUid != null
-              ? trip.participants
-                  ?.firstWhere((p) => p.participantUid == trip.creatorUid)
-              : null;
           final totalExpense = trip.expenses?.fold<double>(
             0.0,
             (previousValue, element) =>

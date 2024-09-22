@@ -1,9 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:udetxen/features/auth/screens/forgot_password_screen.dart';
 import 'package:udetxen/features/auth/screens/login_screen.dart';
-import 'package:udetxen/features/auth/screens/register_screen.dart';
-import 'package:udetxen/shared/utils/theme_service.dart';
-import 'package:provider/provider.dart';
 
 class UnauthenticatedLayout extends StatefulWidget {
   final int initialScreen;
@@ -36,28 +32,8 @@ class _UnauthenticatedLayoutState extends State<UnauthenticatedLayout> {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Provider.of<ThemeService>(context);
-
     return Scaffold(
-      // appBar: AppBar(
-      //   title: const Text('App'),
-      //   actions: [
-      //     IconButton(
-      //       icon: const Icon(Icons.brightness_6),
-      //       onPressed: theme.toggleThemeMode,
-      //     ),
-      //   ],
-      //   backgroundColor: Theme.of(context).hintColor,
-      // ),
       body: LoginScreen(email: widget.email),
-      // PageView(
-      //   controller: _pageController,
-      //   children: [
-      //     LoginScreen(email: widget.email),
-      //     const RegisterScreen(),
-      //     const ForgotPasswordScreen(),
-      //   ],
-      // ),
     );
   }
 }

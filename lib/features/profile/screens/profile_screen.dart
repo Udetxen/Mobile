@@ -3,6 +3,7 @@ import 'package:udetxen/features/auth/screens/login_screen.dart';
 import 'package:udetxen/features/auth/services/auth_service.dart';
 import 'package:udetxen/shared/config/service_locator.dart';
 import 'package:udetxen/shared/utils/notification_util.dart';
+import 'package:udetxen/shared/utils/theme_service.dart';
 import 'package:udetxen/shared/widgets/layouts/authenticated_layout.dart';
 import 'package:provider/provider.dart';
 import 'package:udetxen/shared/types/models/user.dart' as user_model;
@@ -90,28 +91,45 @@ class _ProfileScreenState extends State<ProfileScreen> {
                               shape: const StadiumBorder()),
                           child: Text(
                             'Edit Profile',
-                            style: Theme.of(context).textTheme.labelSmall,
+                            style: Theme.of(context)
+                                .textTheme
+                                .labelSmall
+                                ?.copyWith(
+                                  color: Theme.of(context).primaryColor,
+                                ),
                           )),
                     ),
                     const SizedBox(height: 30),
                     const Divider(),
                     const SizedBox(height: 10),
-                    ListMenu(
-                      onPress: () async {}, 
-                      title: 'Setting', icon: Icons.settings,endIcon: true,
-                    ),
-                    ListMenu(
-                      onPress: () async {}, 
-                      title: 'Information', icon: Icons.info_outline_rounded,endIcon: true,
-                    ),
+                    // ListMenu(
+                    //   onPress: () async {},
+                    //   title: 'Setting',
+                    //   icon: Icons.settings,
+                    //   endIcon: true,
+                    // ),
+                    // ListMenu(
+                    //   onPress: () async {},
+                    //   title: 'Information',
+                    //   icon: Icons.info_outline_rounded,
+                    //   endIcon: true,
+                    // ),
                     ListMenu(
                       onPress: () async {
                         await authService.signOut();
                         if (mounted) {
                           Navigator.pushReplacement(
                               context, LoginScreen.route());
+                          final theme =
+                              Provider.of<ThemeService>(context, listen: false);
+                          if (theme.isDarkMode) {
+                            theme.toggleThemeMode();
+                          }
                         }
-                      }, title: 'Logout', icon: Icons.logout,endIcon: false,
+                      },
+                      title: 'Logout',
+                      icon: Icons.logout,
+                      endIcon: false,
                     )
                   ],
                 )),
@@ -129,7 +147,6 @@ class ListMenu extends StatelessWidget {
     required this.icon,
     required this.title,
     this.endIcon = true,
-
   });
   final String title;
   final IconData icon;
@@ -148,7 +165,7 @@ class ListMenu extends StatelessWidget {
             borderRadius: BorderRadius.circular(100),
             color: Colors.blue.withOpacity(0.1),
           ),
-          child:  Icon(
+          child: Icon(
             icon,
             color: Colors.blue,
           ),
@@ -157,14 +174,17 @@ class ListMenu extends StatelessWidget {
           title,
           style: Theme.of(context).textTheme.labelSmall,
         ),
-        trailing: endIcon? Container(
-          width: 30,
-          height: 30,
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(100),
-            color: Colors.grey.withOpacity(0.1),
-          ),
-          child: const Icon(Icons.arrow_right,size: 18.0,color: Colors.grey)): null,
+        trailing: endIcon
+            ? Container(
+                width: 30,
+                height: 30,
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(100),
+                  color: Colors.grey.withOpacity(0.1),
+                ),
+                child: const Icon(Icons.arrow_right,
+                    size: 18.0, color: Colors.grey))
+            : null,
       ),
     );
   }

@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:udetxen/features/auth/services/auth_service.dart';
 import 'package:udetxen/features/profile/services/profile_service.dart';
 import 'package:udetxen/shared/config/service_locator.dart';
-import 'package:udetxen/shared/utils/decor/input_decoration.dart';
 import 'package:udetxen/shared/types/models/user.dart' as user_model;
 
 class ProfileSettingsScreen extends StatefulWidget {
@@ -91,40 +90,49 @@ class _ProfileSettingsScreenState extends State<ProfileSettingsScreen> {
                   TextFormField(
                     initialValue: user.displayName,
                     decoration: InputDecoration(
-                      border: OutlineInputBorder(borderRadius: BorderRadius.circular(100)),
-                      label:const Text('Name'),
-                      prefixIcon:const Icon(Icons.person_outline_rounded),
-                      prefixIconColor: Colors.blue,
-                      floatingLabelStyle: const TextStyle(color: Colors.black),
-                      focusedBorder: const OutlineInputBorder(
-                        borderSide: BorderSide(width: 2,color: const Color.fromARGB(255, 58, 124, 177))
-                      )
-                    ),
+                        border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(100)),
+                        label: const Text('Name'),
+                        prefixIcon: const Icon(Icons.person_outline_rounded),
+                        prefixIconColor: Colors.blue,
+                        floatingLabelStyle:
+                            TextStyle(color: Theme.of(context).primaryColor),
+                        focusedBorder: const OutlineInputBorder(
+                            borderSide: BorderSide(
+                                width: 2,
+                                color: Color.fromARGB(255, 58, 124, 177)))),
                     onSaved: (value) => _displayName = value,
                   ),
                   const SizedBox(height: 20),
                   TextFormField(
                     initialValue: user.bio,
-                    decoration:InputDecoration(
-                      border: OutlineInputBorder(borderRadius: BorderRadius.circular(100)),
-                      label:const Text('Bio'),
-                      prefixIcon:const Icon(Icons.note),
-                      prefixIconColor: Colors.blue,
-                      floatingLabelStyle: const TextStyle(color: Colors.black),
-                      focusedBorder: const OutlineInputBorder(
-                        borderSide: BorderSide(width: 2,color: const Color.fromARGB(255, 58, 124, 177))
-                      )
-                    ),
+                    decoration: InputDecoration(
+                        border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(100)),
+                        label: const Text('Bio'),
+                        prefixIcon: const Icon(Icons.note),
+                        prefixIconColor: Colors.blue,
+                        floatingLabelStyle:
+                            TextStyle(color: Theme.of(context).primaryColor),
+                        focusedBorder: const OutlineInputBorder(
+                            borderSide: BorderSide(
+                                width: 2,
+                                color: Color.fromARGB(255, 58, 124, 177)))),
                     onSaved: (value) => _bio = value,
                   ),
                   const SizedBox(height: 20),
                   ElevatedButton(
                     onPressed: _updateProfile,
-                     style: ElevatedButton.styleFrom(
-                              backgroundColor: Colors.yellow[600],
-                              side: BorderSide.none,
-                              shape:  StadiumBorder()),
-                    child:  Text('Save', style: Theme.of(context).textTheme.labelSmall,),
+                    style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.yellow[600],
+                        side: BorderSide.none,
+                        shape: const StadiumBorder()),
+                    child: Text(
+                      'Save',
+                      style: Theme.of(context).textTheme.labelSmall?.copyWith(
+                            color: Theme.of(context).primaryColor,
+                          ),
+                    ),
                   ),
                 ],
               ),
