@@ -61,16 +61,21 @@ class ExpenseService {
     DocumentSnapshot tripSnapshot = await tripRef.get();
     Trip trip = Trip.fromJson(tripSnapshot.data() as Map<String, dynamic>);
 
-    QuerySnapshot expensesSnapshot = await _firestore
-        .collection(expenseCollection)
-        .where(FieldPath.documentId, whereIn: trip.expenseUids)
-        .get();
+    QuerySnapshot? expensesSnapshot =
+        trip.expenseUids == null || trip.expenseUids!.isEmpty
+            ? null
+            : await _firestore
+                .collection(expenseCollection)
+                .where(FieldPath.documentId, whereIn: trip.expenseUids)
+                .get();
 
-    double totalBudgets = expensesSnapshot.docs.fold(0.0, (sum, doc) {
-      Expense existingExpense =
-          Expense.fromJson(doc.data() as Map<String, dynamic>);
-      return sum + existingExpense.budget;
-    });
+    double totalBudgets = expensesSnapshot == null
+        ? 0.0
+        : expensesSnapshot.docs.fold(0.0, (sum, doc) {
+            Expense existingExpense =
+                Expense.fromJson(doc.data() as Map<String, dynamic>);
+            return sum + existingExpense.budget;
+          });
 
     if (totalBudgets + expense.budget > trip.budget) {
       throw Exception('Total expenses\' budget exceed the trip budget');
@@ -99,16 +104,21 @@ class ExpenseService {
     DocumentSnapshot tripSnapshot = await tripRef.get();
     Trip trip = Trip.fromJson(tripSnapshot.data() as Map<String, dynamic>);
 
-    QuerySnapshot expensesSnapshot = await _firestore
-        .collection(expenseCollection)
-        .where(FieldPath.documentId, whereIn: trip.expenseUids)
-        .get();
+    QuerySnapshot? expensesSnapshot =
+        trip.expenseUids == null || trip.expenseUids!.isEmpty
+            ? null
+            : await _firestore
+                .collection(expenseCollection)
+                .where(FieldPath.documentId, whereIn: trip.expenseUids)
+                .get();
 
-    double totalBudgets = expensesSnapshot.docs.fold(0.0, (sum, doc) {
-      Expense existingExpense =
-          Expense.fromJson(doc.data() as Map<String, dynamic>);
-      return sum + existingExpense.budget;
-    });
+    double totalBudgets = expensesSnapshot == null
+        ? 0.0
+        : expensesSnapshot.docs.fold(0.0, (sum, doc) {
+            Expense existingExpense =
+                Expense.fromJson(doc.data() as Map<String, dynamic>);
+            return sum + existingExpense.budget;
+          });
 
     DocumentSnapshot existingExpenseSnapshot = await expenseRef.get();
     Expense existingExpense = Expense.fromJson(
@@ -211,10 +221,10 @@ class ExpenseService {
       double personalBudget = participant.personalBudget!;
 
       List<String> expenseUids = participant.expenseUids ?? [];
-      QuerySnapshot expensesSnapshot;
+      QuerySnapshot? expensesSnapshot;
 
       if (expenseUids.isEmpty) {
-        expensesSnapshot = await _firestore.collection(expenseCollection).get();
+        expensesSnapshot = null;
       } else {
         expensesSnapshot = await _firestore
             .collection(expenseCollection)
@@ -222,20 +232,22 @@ class ExpenseService {
             .get();
       }
 
-      double totalExpenses = expensesSnapshot.docs.fold(0.0, (sum, doc) {
-        Expense existingExpense =
-            Expense.fromJson(doc.data() as Map<String, dynamic>);
-        return sum + existingExpense.budget;
-      });
+      double currentBudget = expensesSnapshot == null
+          ? 0
+          : expensesSnapshot.docs.fold(0.0, (sum, doc) {
+              Expense existingExpense =
+                  Expense.fromJson(doc.data() as Map<String, dynamic>);
+              return sum + existingExpense.budget;
+            });
 
       if (expense.uid != null) {
         DocumentSnapshot existingExpenseSnapshot = await expenseRef.get();
         Expense existingExpense = Expense.fromJson(
             existingExpenseSnapshot.data() as Map<String, dynamic>);
-        totalExpenses -= existingExpense.budget;
+        currentBudget -= existingExpense.budget;
       }
 
-      if (totalExpenses + expense.budget > personalBudget) {
+      if (currentBudget + expense.budget > personalBudget) {
         throw Exception('Total expenses exceed the personal budget');
       }
 

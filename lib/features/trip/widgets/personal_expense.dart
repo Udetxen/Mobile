@@ -79,7 +79,7 @@ class PersonalExpense extends StatelessWidget {
               children: [
                 Text(
                   'Your Total Expense: \$${totalExpense.toStringAsFixed(2)}',
-                  style: const TextStyle(fontSize: 16),
+                  style: const TextStyle(fontSize: 14),
                 ),
                 totalExpense == 0.0
                     ? ElevatedButton.icon(
@@ -106,7 +106,7 @@ class PersonalExpense extends StatelessWidget {
                         },
                         icon: const Icon(Icons.remove_red_eye),
                         label: const Text('Details',
-                            style: TextStyle(fontSize: 12)),
+                            style: TextStyle(fontSize: 10)),
                         style: ElevatedButton.styleFrom(
                           foregroundColor:
                               Theme.of(context).scaffoldBackgroundColor,

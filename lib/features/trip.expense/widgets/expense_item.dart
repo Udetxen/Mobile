@@ -45,18 +45,18 @@ class ExpenseItem extends StatelessWidget {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Text(
-                          'Budget: \$${expense.budget.toStringAsFixed(2)}',
+                          'Budget: \$${expense.budget.toStringAsFixed(0)}',
                           style: const TextStyle(
-                            fontSize: 14,
+                            fontSize: 13,
                             color: Colors.grey,
                           ),
                         ),
                         Text(
                           expense.expense != null
-                              ? 'Expense: \$${expense.expense!.toStringAsFixed(2)}'
+                              ? 'Expense: \$${expense.expense!.toStringAsFixed(0)}'
                               : 'Expense: Not Set',
                           style: TextStyle(
-                            fontSize: 14,
+                            fontSize: 13,
                             color: expense.expense != null
                                 ? Theme.of(context).primaryColor
                                 : Colors.orangeAccent,

@@ -19,9 +19,6 @@ class TripDetailHeader extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final DashboardTripService dashboardTripService =
-        getIt<DashboardTripService>();
-
     return FutureBuilder(
       future: getIt<AuthService>().currentUser,
       builder: (context, snapshot) {
@@ -56,16 +53,33 @@ class TripDetailHeader extends StatelessWidget {
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Colors.blue,
                     shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(8),
+                      borderRadius: BorderRadius.circular(3),
                     ),
                   ),
-                  child: const Text('Make a Plan'),
+                  child:
+                      const Text('Make a Plan', style: TextStyle(fontSize: 18)),
                 ),
               ] else if (user.isAdmin) ...[
                 ElevatedButton(
                   onPressed: () async {
-                    await dashboardTripService.deleteTrip(trip.uid!);
-                    Navigator.pop(context);
+                    final shouldDelete =
+                        await _showDeleteConfirmationDialog(context);
+
+                    if (shouldDelete) {
+                      Navigator.pop(context);
+                      final dashboardTripService =
+                          getIt<DashboardTripService>();
+
+                      try {
+                        await dashboardTripService.deleteTrip(trip.uid!);
+                      } catch (error) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                              content:
+                                  Text('Failed to delete the trip: $error')),
+                        );
+                      }
+                    }
                   },
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Colors.red,
@@ -91,11 +105,15 @@ class TripDetailHeader extends StatelessWidget {
                   child: const Text('Update'),
                 ),
               ]
-            ] else
+            ] else ...[
               ElevatedButton(
                 onPressed: () async {
-                  await tripService.deleteTrip(trip.uid!);
-                  Navigator.pop(context);
+                  final shouldDelete =
+                      await _showDeleteConfirmationDialog(context);
+                  if (shouldDelete) {
+                    await tripService.deleteTrip(trip.uid!);
+                    Navigator.pop(context);
+                  }
                 },
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Colors.red,
@@ -105,23 +123,48 @@ class TripDetailHeader extends StatelessWidget {
                 ),
                 child: const Text('Delete'),
               ),
-            ElevatedButton(
-              onPressed: () async {
-                Navigator.of(context).pushReplacement(
-                  TripFormScreen.route(trip: trip),
-                );
-              },
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.green,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(8),
+              const SizedBox(width: 8),
+              ElevatedButton(
+                onPressed: () async {
+                  Navigator.of(context).pushReplacement(
+                    TripFormScreen.route(trip: trip),
+                  );
+                },
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.green,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(8),
+                  ),
                 ),
+                child: const Text('Update'),
               ),
-              child: const Text('Update'),
-            ),
+            ]
           ],
         );
       },
     );
+  }
+
+  Future<bool> _showDeleteConfirmationDialog(BuildContext context) async {
+    return await showDialog<bool>(
+          context: context,
+          builder: (context) {
+            return AlertDialog(
+              title: const Text('Confirm Delete'),
+              content: const Text('Are you sure you want to delete this trip?'),
+              actions: [
+                TextButton(
+                  onPressed: () => Navigator.of(context).pop(false),
+                  child: const Text('Cancel'),
+                ),
+                TextButton(
+                  onPressed: () => Navigator.of(context).pop(true),
+                  child: const Text('Delete'),
+                ),
+              ],
+            );
+          },
+        ) ??
+        false;
   }
 }

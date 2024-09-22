@@ -227,6 +227,7 @@ class _DashboardTripFormScreenState extends State<DashboardTripFormScreen> {
                     if (_formKey.currentState!.validate()) {
                       final newTripUid = await _dashboardTripService
                           .createOrUpdateAvailableTrip(Trip(
+                        uid: widget.trip?.uid,
                         name: _nameController.text,
                         duration: int.parse(_durationController.text),
                         budget: double.parse(_budgetController.text),

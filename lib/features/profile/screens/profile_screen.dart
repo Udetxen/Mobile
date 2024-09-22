@@ -103,18 +103,19 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     const SizedBox(height: 30),
                     const Divider(),
                     const SizedBox(height: 10),
-                    ListMenu(
-                      onPress: () {
-                        // Navigate to the report screen
-                        Navigator.push(
-                          context,
-                          ReportScreen.route(),
-                        );
-                      },
-                      title: 'Report',
-                      icon: Icons.report,
-                      endIcon: true,
-                    ),
+                    if (user.isUser)
+                      ListMenu(
+                        onPress: () {
+                          // Navigate to the report screen
+                          Navigator.push(
+                            context,
+                            ReportScreen.route(),
+                          );
+                        },
+                        title: 'Report',
+                        icon: Icons.report,
+                        endIcon: true,
+                      ),
                     // ListMenu(
                     //   onPress: () async {},
                     //   title: 'Setting',

@@ -31,7 +31,7 @@ class _AuthenticatedLayoutState extends State<AuthenticatedLayout> {
   ];
 
   final List<Widget> _adminScreens = [
-    const UserManagementScreen(),
+    // const UserManagementScreen(),
     const VenueListScreen(),
     const DashboardTripListScreen(),
     const ProfileScreen(),
@@ -77,10 +77,10 @@ class _AuthenticatedLayoutState extends State<AuthenticatedLayout> {
         currentIndex: _selectedIndex,
         items: widget.isAdmin
             ? [
-                const BottomNavigationBarItem(
-                  icon: Icon(Icons.people),
-                  label: 'Manage Users',
-                ),
+                // const BottomNavigationBarItem(
+                //   icon: Icon(Icons.people),
+                //   label: 'Manage Users',
+                // ),
                 const BottomNavigationBarItem(
                   icon: Icon(Icons.location_city),
                   label: 'Venues',

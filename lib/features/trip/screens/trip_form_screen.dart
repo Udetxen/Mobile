@@ -342,6 +342,7 @@ class _TripFormScreenState extends State<TripFormScreen> {
                 ElevatedButton(
                   onPressed: () async {
                     if (_formKey.currentState!.validate()) {
+                      final currentUserId = _authService.currentUserUid;
                       final newTripUid = widget.trip == null
                           ? await _tripService.createTrip(Trip(
                               name: _nameController.text,
@@ -377,18 +378,24 @@ class _TripFormScreenState extends State<TripFormScreen> {
                                           Participant(participantUid: u.uid!))
                                       .toList(),
                                 ))
-                              : await _tripService
-                                  .updateTrip(widget.trip!.copyWith(
-                                  uid: widget.trip!.uid,
-                                  name: _nameController.text,
-                                  startDate:
-                                      DateTime.parse(_startDateController.text),
-                                  duration: int.parse(_durationController.text),
-                                  budget: double.parse(_budgetController.text),
-                                  departureUid: _selectedDepartureVenue!.uid!,
-                                  destinationUid:
-                                      _selectedDestinationVenue!.uid!,
-                                ));
+                              : currentUserId == widget.trip!.creatorUid!
+                                  ? await _tripService
+                                      .updateTrip(widget.trip!.copyWith(
+                                      uid: widget.trip!.uid,
+                                      name: _nameController.text,
+                                      startDate: DateTime.parse(
+                                          _startDateController.text),
+                                      duration:
+                                          int.parse(_durationController.text),
+                                      budget:
+                                          double.parse(_budgetController.text),
+                                      departureUid:
+                                          _selectedDepartureVenue!.uid!,
+                                      destinationUid:
+                                          _selectedDestinationVenue!.uid!,
+                                    ))
+                                  : throw Exception(
+                                      'Unauthorized to update trip');
 
                       Navigator.of(context)
                           .pushReplacement(TripDetailScreen.route(newTripUid));
