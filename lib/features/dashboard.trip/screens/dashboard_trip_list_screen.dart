@@ -41,15 +41,13 @@ class _DashboardTripListScreenState extends State<DashboardTripListScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        title: const Text('Available Trips'),
+        centerTitle: true,
+        backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+      ),
       body: Column(
         children: [
-          Container(
-            padding: const EdgeInsets.all(12.0),
-            child: const Text(
-              'Available Trips',
-              style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
-            ),
-          ),
           Expanded(
             child: StreamBuilder<List<Trip>>(
               stream: _tripsStream,

@@ -3,6 +3,8 @@ import 'package:udetxen/features/auth/services/auth_service.dart';
 import 'package:udetxen/features/profile/services/profile_service.dart';
 import 'package:udetxen/shared/config/service_locator.dart';
 import 'package:udetxen/shared/types/models/user.dart' as user_model;
+import 'dart:io';
+import 'package:image_picker/image_picker.dart';
 
 class ProfileSettingsScreen extends StatefulWidget {
   const ProfileSettingsScreen({super.key});
@@ -21,6 +23,8 @@ class _ProfileSettingsScreenState extends State<ProfileSettingsScreen> {
   final _formKey = GlobalKey<FormState>();
   String? _displayName;
   String? _bio;
+  File? _imageFile;
+  final ImagePicker _picker = ImagePicker();
 
   @override
   Widget build(BuildContext context) {
@@ -55,21 +59,22 @@ class _ProfileSettingsScreenState extends State<ProfileSettingsScreen> {
                         height: 120,
                         child: ClipRRect(
                           borderRadius: BorderRadius.circular(100),
-                          child: Image(
-                            image: user.photoURL != null
-                                ? NetworkImage(user.photoURL!)
-                                : const NetworkImage(
-                                    'https://pics.freeicons.io/uploads/icons/png/7229900911605810030-512.png'),
-                          ),
+                          child: _imageFile != null
+                              ? Image.file(
+                                  _imageFile!) // Display selected image
+                              : Image(
+                                  image: user.photoURL != null
+                                      ? NetworkImage(user.photoURL!)
+                                      : const NetworkImage(
+                                          'https://pics.freeicons.io/uploads/icons/png/7229900911605810030-512.png'),
+                                ),
                         ),
                       ),
                       Positioned(
                         bottom: 0,
                         right: 0,
                         child: GestureDetector(
-                          onTap: () {
-                            debugPrint('asdasdsa');
-                          },
+                          onTap: _pickImage, // Call the method to pick an image
                           child: Container(
                               width: 30,
                               height: 30,
@@ -84,9 +89,7 @@ class _ProfileSettingsScreenState extends State<ProfileSettingsScreen> {
                       ),
                     ],
                   ),
-                  const SizedBox(
-                    height: 20,
-                  ),
+                  const SizedBox(height: 20),
                   TextFormField(
                     initialValue: user.displayName,
                     decoration: InputDecoration(
@@ -143,6 +146,15 @@ class _ProfileSettingsScreenState extends State<ProfileSettingsScreen> {
     );
   }
 
+  Future<void> _pickImage() async {
+    final pickedFile = await _picker.pickImage(source: ImageSource.gallery);
+    if (pickedFile != null) {
+      setState(() {
+        _imageFile = File(pickedFile.path);
+      });
+    }
+  }
+
   Future<void> _updateProfile() async {
     if (_formKey.currentState?.validate() ?? false) {
       _formKey.currentState?.save();
@@ -158,18 +170,18 @@ class _ProfileSettingsScreenState extends State<ProfileSettingsScreen> {
         displayName: _displayName ?? user.displayName,
         photoURL: user.photoURL,
         bio: _bio ?? user.bio,
+        role: user.role,
       );
 
-      final res = await profileService.updateUserProfile(updatedUser);
+      final res =
+          await profileService.updateUserProfile(updatedUser, _imageFile);
 
       await res.on(onFailure: (e) {
         if (!mounted) return;
       }, onSuccess: (updatedUser) async {
         if (!mounted) return;
 
-        if (mounted) {
-          Navigator.pop(context, true);
-        }
+        Navigator.pop(context, true);
       });
     }
   }

@@ -20,7 +20,7 @@ class AvailableToursWidget extends StatelessWidget {
           return const Loading(isFullScreen: false);
         }
         if (!snapshot.hasData || snapshot.data!.isEmpty) {
-          return const Text('No available tours');
+          return const Text('No available trips');
         }
         return CarouselSlider(
           options: CarouselOptions(

@@ -5,12 +5,14 @@ import 'package:udetxen/shared/config/constants.dart';
 import 'package:udetxen/shared/types/models/expense.dart';
 import 'package:udetxen/shared/types/models/expense_category.dart';
 import 'package:udetxen/shared/types/models/trip.dart';
+import 'package:udetxen/shared/utils/notification_util.dart';
 
 class ExpenseService {
   final FirebaseFirestore _firestore;
   final AuthService _authService;
+  final NotificationUtil _notificationUtil;
 
-  ExpenseService(this._firestore, this._authService);
+  ExpenseService(this._firestore, this._authService, this._notificationUtil);
 
   Stream<List<Trip>> getUserTrips() async* {
     final userId = await _authService.currentUser.then((u) => u.uid);
@@ -130,6 +132,8 @@ class ExpenseService {
     }
 
     await expenseRef.update(expense.toJson());
+
+    _checkAndNotifyBudgetExceed(trip);
   }
 
   Stream<List<Expense>> getExpenses(List<String> expenseUids) {
@@ -256,6 +260,7 @@ class ExpenseService {
         await expenseRef.set(expense.toJson());
       } else {
         await expenseRef.update(expense.toJson());
+        _checkAndNotifyBudgetExceed(trip);
       }
 
       participant.expenseUids = (participant.expenseUids ?? [])
@@ -268,5 +273,29 @@ class ExpenseService {
     return tripRef
         .get()
         .then((doc) => Trip.fromJson(doc.data() as Map<String, dynamic>));
+  }
+
+  Future<void> _checkAndNotifyBudgetExceed(Trip trip) async {
+    final expenses = await getExpenses(trip.expenseUids ?? []).first;
+    final totalExpense =
+        expenses.fold(0.0, (sum, expense) => sum + (expense.expense ?? 0.0));
+
+    if (totalExpense > trip.budget) {
+      await _notificationUtil.showNotification(
+        title: 'Budget Exceeded',
+        body: 'The total expenses for the trip have exceeded the budget.',
+        payload: trip.uid,
+      );
+    }
+
+    for (final expense in expenses) {
+      if ((expense.expense ?? 0) > expense.budget) {
+        await _notificationUtil.showNotification(
+          title: 'Expense Budget Exceeded',
+          body: 'An expense has exceeded its budget.',
+          payload: trip.uid,
+        );
+      }
+    }
   }
 }

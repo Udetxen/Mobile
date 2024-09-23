@@ -84,7 +84,7 @@ class _ExpenseFormDialogState extends State<ExpenseFormDialog> {
                   controller: _budgetController,
                 ),
                 const SizedBox(height: 8),
-                if (widget.expense == null)
+                if (widget.expense?.expense == null)
                   TextField(
                     decoration: getInputDecoration(context,
                         labelText:
@@ -148,11 +148,14 @@ class _ExpenseFormDialogState extends State<ExpenseFormDialog> {
                           widget.expense!.copyWith(
                             name: _expenseNameController.text,
                             budget: double.parse(_budgetController.text),
-                            // expense: double.tryParse(
-                            //             _expenseAmountController.text) !=
-                            //         0
-                            //     ? double.tryParse(_expenseAmountController.text)
-                            //     : null,
+                            expense: widget.expense?.expense == null
+                                ? double.tryParse(
+                                            _expenseAmountController.text) !=
+                                        0
+                                    ? double.tryParse(
+                                        _expenseAmountController.text)
+                                    : null
+                                : null,
                             categoryUids: _selectedCategoryUids,
                           ),
                         );

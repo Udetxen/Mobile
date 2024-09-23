@@ -283,7 +283,8 @@ class _TripFormScreenState extends State<TripFormScreen> {
                   },
                 ),
                 const SizedBox(height: 16),
-                if (widget.isForked && widget.trip != null) ...[
+                if ((widget.isForked && widget.trip != null) ||
+                    (!widget.isForked && widget.trip == null)) ...[
                   DropdownButtonFormField<String>(
                     value: _typeController.text.isEmpty
                         ? null

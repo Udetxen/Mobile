@@ -1,13 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:udetxen/features/dashboard.trip/screens/dashboard_trip_list_screen.dart';
-import 'package:udetxen/features/dashboard.user/screens/user_management_screen.dart';
 import 'package:udetxen/features/dashboard.venue/screens/venue_list_screen.dart';
 import 'package:udetxen/features/home/screens/home_screen.dart';
 import 'package:udetxen/features/profile/screens/profile_screen.dart';
 import 'package:udetxen/features/trip.expense/screens/expense_list_screen.dart';
 import 'package:udetxen/features/trip/screens/trip_list_screen.dart';
-import 'package:udetxen/shared/utils/theme_service.dart';
-import 'package:provider/provider.dart';
 
 class AuthenticatedLayout extends StatefulWidget {
   final int currentIndex;
@@ -51,25 +48,7 @@ class _AuthenticatedLayoutState extends State<AuthenticatedLayout> {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Provider.of<ThemeService>(context);
-
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('UDetxen'),
-        leading: const Padding(
-          padding: EdgeInsets.only(left: 12.0, bottom: 5),
-          child: CircleAvatar(
-            backgroundImage: AssetImage('assets/images/logo.jpg'),
-          ),
-        ),
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.brightness_6),
-            onPressed: theme.toggleThemeMode,
-          ),
-        ],
-        backgroundColor: Theme.of(context).hintColor,
-      ),
       body: widget.isAdmin
           ? _adminScreens[_selectedIndex]
           : _userScreens[_selectedIndex],

@@ -27,6 +27,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
   @override
   Widget build(BuildContext context) {
     final authService = getIt<AuthService>();
+    final theme = Provider.of<ThemeService>(context);
+
     return StreamBuilder<user_model.User?>(
       stream: authService.userStream,
       builder: (context, snapshot) {
@@ -42,6 +44,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 padding: const EdgeInsets.all(4.0),
                 child: Column(
                   children: [
+                    const SizedBox(
+                      height: 30,
+                    ),
                     SizedBox(
                       width: 120,
                       height: 120,
@@ -128,6 +133,15 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     //   icon: Icons.info_outline_rounded,
                     //   endIcon: true,
                     // ),
+
+                    ListMenu(
+                      onPress: theme.toggleThemeMode,
+                      icon:
+                          theme.isDarkMode ? Icons.dark_mode : Icons.light_mode,
+                      title: 'Change Theme',
+                      endIcon: false,
+                    ),
+
                     ListMenu(
                       onPress: () async {
                         await authService.signOut();

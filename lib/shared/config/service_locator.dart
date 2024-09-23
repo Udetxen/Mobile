@@ -55,7 +55,10 @@ Future<void> setupLocator() async {
       getIt<FirebaseFirestore>(), getIt<GoogleSignIn>()));
 
   getIt.registerFactory<ProfileService>(() => ProfileService(
-      getIt<FirebaseAuth>(), getIt<FirebaseFirestore>(), getIt<AuthService>()));
+      getIt<FirebaseAuth>(),
+      getIt<FirebaseFirestore>(),
+      getIt<AuthService>(),
+      getIt<FirebaseStorage>()));
 
   getIt.registerFactory<DashboardTripService>(
       () => DashboardTripService(getIt<FirebaseFirestore>()));
@@ -72,8 +75,10 @@ Future<void> setupLocator() async {
   getIt.registerFactory<TripService>(
       () => TripService(getIt<FirebaseFirestore>(), getIt<AuthService>()));
 
-  getIt.registerFactory<ExpenseService>(
-      () => ExpenseService(getIt<FirebaseFirestore>(), getIt<AuthService>()));
+  getIt.registerFactory<ExpenseService>(() => ExpenseService(
+      getIt<FirebaseFirestore>(),
+      getIt<AuthService>(),
+      getIt<NotificationUtil>()));
 
   getIt.registerFactory<ReportService>(() => ReportService(
       getIt<FirebaseAuth>(),

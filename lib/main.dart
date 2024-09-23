@@ -44,6 +44,7 @@ class MainApp extends StatelessWidget {
       child: Consumer<ThemeService>(
         builder: (context, themeService, _) {
           return MaterialApp(
+            debugShowCheckedModeBanner: false,
             navigatorKey: navigatorKey,
             theme: themeService.isDarkMode
                 ? AppTheme.darkTheme
